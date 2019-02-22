@@ -1,0 +1,3 @@
+ami-e24b7d9d
+i-06782a6785a563dd1
+arn:aws:ec2:us-east-1:968339500772:instance/i-06782a6785a563dd1

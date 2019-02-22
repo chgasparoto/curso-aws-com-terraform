@@ -1,0 +1,61 @@
+digraph {
+	compound = "true"
+	newrank = "true"
+	subgraph "root" {
+		"[root] aws_s3_bucket.meu_bucket" [label = "aws_s3_bucket.meu_bucket", shape = "box"]
+		"[root] module.bucket-2.aws_s3_bucket.this" [label = "module.bucket-2.aws_s3_bucket.this", shape = "box"]
+		"[root] module.bucket-2.aws_s3_bucket_object.this" [label = "module.bucket-2.aws_s3_bucket_object.this", shape = "box"]
+		"[root] module.bucket.aws_s3_bucket.this" [label = "module.bucket.aws_s3_bucket.this", shape = "box"]
+		"[root] module.bucket.aws_s3_bucket_object.this" [label = "module.bucket.aws_s3_bucket_object.this", shape = "box"]
+		"[root] provider.aws" [label = "provider.aws", shape = "diamond"]
+		"[root] provider.random" [label = "provider.random", shape = "diamond"]
+		"[root] random_id.bucket" [label = "random_id.bucket", shape = "box"]
+		"[root] random_id.bucket_2" [label = "random_id.bucket_2", shape = "box"]
+		"[root] aws_s3_bucket.meu_bucket" -> "[root] provider.aws"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] aws_s3_bucket.meu_bucket"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] module.bucket-2.output.object"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] output.bucket_1"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] output.bucket_1_object"
+		"[root] meta.count-boundary (count boundary fixup)" -> "[root] output.bucket_2"
+		"[root] module.bucket-2.aws_s3_bucket.this" -> "[root] module.bucket-2.var.acl"
+		"[root] module.bucket-2.aws_s3_bucket.this" -> "[root] module.bucket-2.var.name"
+		"[root] module.bucket-2.aws_s3_bucket.this" -> "[root] module.bucket-2.var.tags"
+		"[root] module.bucket-2.aws_s3_bucket.this" -> "[root] module.bucket-2.var.versioning"
+		"[root] module.bucket-2.aws_s3_bucket.this" -> "[root] provider.aws"
+		"[root] module.bucket-2.aws_s3_bucket_object.this" -> "[root] module.bucket-2.aws_s3_bucket.this"
+		"[root] module.bucket-2.aws_s3_bucket_object.this" -> "[root] module.bucket-2.var.create_object"
+		"[root] module.bucket-2.aws_s3_bucket_object.this" -> "[root] module.bucket-2.var.object_key"
+		"[root] module.bucket-2.aws_s3_bucket_object.this" -> "[root] module.bucket-2.var.object_source"
+		"[root] module.bucket-2.output.name" -> "[root] module.bucket-2.aws_s3_bucket.this"
+		"[root] module.bucket-2.output.object" -> "[root] module.bucket-2.aws_s3_bucket_object.this"
+		"[root] module.bucket-2.var.name" -> "[root] random_id.bucket_2"
+		"[root] module.bucket.aws_s3_bucket.this" -> "[root] module.bucket.var.acl"
+		"[root] module.bucket.aws_s3_bucket.this" -> "[root] module.bucket.var.name"
+		"[root] module.bucket.aws_s3_bucket.this" -> "[root] module.bucket.var.tags"
+		"[root] module.bucket.aws_s3_bucket.this" -> "[root] module.bucket.var.versioning"
+		"[root] module.bucket.aws_s3_bucket.this" -> "[root] provider.aws"
+		"[root] module.bucket.aws_s3_bucket_object.this" -> "[root] module.bucket.aws_s3_bucket.this"
+		"[root] module.bucket.aws_s3_bucket_object.this" -> "[root] module.bucket.var.create_object"
+		"[root] module.bucket.aws_s3_bucket_object.this" -> "[root] module.bucket.var.object_key"
+		"[root] module.bucket.aws_s3_bucket_object.this" -> "[root] module.bucket.var.object_source"
+		"[root] module.bucket.output.name" -> "[root] module.bucket.aws_s3_bucket.this"
+		"[root] module.bucket.output.object" -> "[root] module.bucket.aws_s3_bucket_object.this"
+		"[root] module.bucket.var.name" -> "[root] random_id.bucket"
+		"[root] module.bucket.var.object_key" -> "[root] random_id.bucket"
+		"[root] output.bucket_1" -> "[root] module.bucket.output.name"
+		"[root] output.bucket_1_object" -> "[root] module.bucket.output.object"
+		"[root] output.bucket_2" -> "[root] module.bucket-2.output.name"
+		"[root] provider.aws (close)" -> "[root] aws_s3_bucket.meu_bucket"
+		"[root] provider.aws (close)" -> "[root] module.bucket-2.aws_s3_bucket_object.this"
+		"[root] provider.aws (close)" -> "[root] module.bucket.aws_s3_bucket_object.this"
+		"[root] provider.aws" -> "[root] var.region"
+		"[root] provider.random (close)" -> "[root] random_id.bucket"
+		"[root] provider.random (close)" -> "[root] random_id.bucket_2"
+		"[root] random_id.bucket" -> "[root] provider.random"
+		"[root] random_id.bucket_2" -> "[root] provider.random"
+		"[root] root" -> "[root] meta.count-boundary (count boundary fixup)"
+		"[root] root" -> "[root] provider.aws (close)"
+		"[root] root" -> "[root] provider.random (close)"
+	}
+}
+
