@@ -1,0 +1,20 @@
+{
+  "name": "nodejs-app",
+  "version": "1.0.0",
+  "description": "Simple nodejs app to run on AWS ECS",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "serverless",
+    "ecs",
+    "fargate"
+  ],
+  "author": "Cleber Gasparoto",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "express": "^4.17.1"
+  }
+}
