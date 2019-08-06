@@ -22,7 +22,6 @@ resource "aws_alb_target_group" "this" {
   }
 }
 
-# Redireciona todo o tráfego do ALB para o target group
 resource "aws_alb_listener" "this" {
   load_balancer_arn = aws_alb.this.id
   port              = var.app_port

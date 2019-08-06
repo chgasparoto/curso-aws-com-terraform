@@ -4,12 +4,12 @@ resource "aws_ecr_repository" "this" {
 
 resource "null_resource" "docker" {
   triggers = {
-    app_md5 = filemd5("${var.app_folder}/server.js")
+    app_name = filemd5("${var.app_folder}/server.js")
   }
 
   provisioner "local-exec" {
     working_dir = var.app_folder
-    command     = "$(aws ecr get-login --no-include-email --region ${var.aws_region})"
+    command     = "$(aws ecr get-login --no-include-email --region ${var.region})"
   }
 
   provisioner "local-exec" {
@@ -26,6 +26,4 @@ resource "null_resource" "docker" {
     working_dir = var.app_folder
     command     = "docker push ${aws_ecr_repository.this.repository_url}:latest"
   }
-
-  depends_on = [aws_ecr_repository.this]
 }
