@@ -9,7 +9,7 @@ resource "null_resource" "docker" {
 
   provisioner "local-exec" {
     working_dir = var.app_folder
-    command     = "$(aws ecr get-login --no-include-email --region ${var.aws_region})"
+    command     = "$(aws ecr get-login --no-include-email --region ${var.region})"
   }
 
   provisioner "local-exec" {
@@ -26,6 +26,4 @@ resource "null_resource" "docker" {
     working_dir = var.app_folder
     command     = "docker push ${aws_ecr_repository.this.repository_url}:latest"
   }
-
-  depends_on = [aws_ecr_repository.this]
 }

@@ -1,6 +1,6 @@
 [
   {
-    "name": "${app_name}-container",
+    "name": "${container_name}",
     "image": "${app_image}",
     "cpu": ${fargate_cpu},
     "memory": ${fargate_memory},
@@ -17,6 +17,12 @@
       {
         "containerPort": ${app_port},
         "hostPort": ${app_port}
+      }
+    ],
+    "environment": [
+      {
+        "name": "NODE_ENV",
+        "value": "${env}"
       }
     ]
   }

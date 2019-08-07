@@ -10,14 +10,15 @@ resource "aws_ecs_task_definition" "this" {
   cpu                      = var.fargate_cpu
   memory                   = var.fargate_memory
 
-  container_definitions = templatefile("${path.module}/${var.env}/template-task-definition.json", {
-    app_image      = aws_ecr_repository.this.repository_url,
+  container_definitions = templatefile("${path.module}/${var.env}/template-container-definition.json", {
+    app_image      = aws_ecr_repository.this.repository_url
     app_name       = local.app_name
     container_name = local.container_name
     app_port       = var.app_port
     fargate_cpu    = var.fargate_cpu
     fargate_memory = var.fargate_memory
-    aws_region     = var.aws_region
+    aws_region     = var.region
+    env            = var.env == "prod" ? "production" : var.env
   })
 }
 
@@ -29,8 +30,8 @@ resource "aws_ecs_service" "this" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    security_groups  = [aws_security_group.ecs_tasks.id]
     subnets          = aws_subnet.private.*.id
+    security_groups  = [aws_security_group.ecs_tasks.id]
     assign_public_ip = true
   }
 
@@ -40,5 +41,5 @@ resource "aws_ecs_service" "this" {
     container_port   = var.app_port
   }
 
-  depends_on = [aws_alb_listener.this, aws_iam_role_policy_attachment.ecs_task_execution_role]
+  depends_on = [aws_iam_role_policy_attachment.ecs_task_execution_role, aws_alb_listener.this]
 }

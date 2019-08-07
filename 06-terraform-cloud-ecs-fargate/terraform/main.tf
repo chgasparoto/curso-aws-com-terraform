@@ -1,17 +1,10 @@
 terraform {
   required_version = "~> 0.12.5"
 
-  backend "remote" {
-    hostname     = "app.terraform.io"
-    organization = "curso-aws-com-terraform"
-
-    workspaces {
-      name = "default"
-    }
-  }
+  backend "remote" {}
 }
 
 provider "aws" {
-  region  = var.aws_region
-  version = "2.21.1"
+  region  = var.region
+  version = "2.22.0"
 }

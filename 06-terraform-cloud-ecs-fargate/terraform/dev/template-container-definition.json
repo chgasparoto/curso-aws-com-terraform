@@ -18,6 +18,12 @@
         "containerPort": ${app_port},
         "hostPort": ${app_port}
       }
+    ],
+    "environment": [
+      {
+        "name": "NODE_ENV",
+        "value": "${env}"
+      }
     ]
   }
 ]

@@ -6,22 +6,21 @@ if [ "$1" = "prod" ]; then
   ENV="prod"
 fi
 
-echo "Starting deployment on environemnt $ENV"
 echo "----------------------------------------"
 echo "Formatting terraform files"
 terraform fmt
 echo "----------------------------------------"
-terraform init
+terraform init -backend=true -backend-config="${ENV}/backend.hcl"
 echo "----------------------------------------"
 echo "Validating terraform files"
 terraform validate
 echo "----------------------------------------"
 echo "Planning..."
-terraform plan -detailed-exitcode -var-file="$ENV/terraform.tfvars" -out="plan"
+terraform plan -var-file="$ENV/terraform.tfvars" -out="plan.tfout"
 echo "----------------------------------------"
 echo "Applying..."
-terraform apply plan
+terraform apply plan.tfout
 echo "----------------------------------------"
 echo "Cleaning up plan file"
-rm -rf plan
+rm -rf plan.tfout
 echo "----------------------------------------"
