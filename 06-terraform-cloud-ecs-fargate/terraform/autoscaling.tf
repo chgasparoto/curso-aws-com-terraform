@@ -3,8 +3,8 @@ resource "aws_appautoscaling_target" "this" {
   resource_id        = local.autoscaling_resource_id
   scalable_dimension = "ecs:service:DesiredCount"
   role_arn           = aws_iam_role.ecs_auto_scale_role.arn
-  min_capacity       = 3
-  max_capacity       = 6
+  min_capacity       = var.ac_min_capacity
+  max_capacity       = var.ac_max_capacity
 }
 
 resource "aws_appautoscaling_policy" "up" {

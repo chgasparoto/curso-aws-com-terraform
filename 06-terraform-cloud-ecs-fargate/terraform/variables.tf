@@ -45,3 +45,19 @@ variable "health_check_path" {
 variable "ecs_auto_scale_role_name" {
   default = "EcsAutoScaleRole"
 }
+
+variable "ac_min_capacity" {
+  default = 2
+}
+
+variable "ac_max_capacity" {
+  default = 5
+}
+
+variable "cidrblock" {
+  default = "10.1.0.0/16"
+}
+
+variable "log_retention" {
+  default = 5
+}

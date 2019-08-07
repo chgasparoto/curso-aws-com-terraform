@@ -1,14 +1,9 @@
 data "aws_availability_zones" "available" {}
 
 resource "aws_vpc" "this" {
-  cidr_block = "10.1.0.0/16"
+  cidr_block = var.cidrblock
 
-  tags = {
-    Name      = "ECS VPC - ${local.app_name}"
-    Env       = var.env
-    ManagedBy = "Terraform"
-    Owner     = "Cleber Gasparoto"
-  }
+  tags = merge({ Name = "${local.app_name}-vpc-ecs" }, local.tags)
 }
 
 resource "aws_subnet" "private" {
