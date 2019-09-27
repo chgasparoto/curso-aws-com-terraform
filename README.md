@@ -11,7 +11,7 @@ Arquivos do curso de Terraform publicado na Udemy https://www.udemy.com/aws-com-
 
 ![Capa do curso](cover.png "Capa do curso")
 
-# Indíce
+# Índice
 
 ### Introdução
 1. [Introdução ao curso](https://www.udemy.com/course/aws-com-terraform/learn/lecture/12122156#overview)
@@ -21,7 +21,7 @@ Arquivos do curso de Terraform publicado na Udemy https://www.udemy.com/aws-com-
 
 ### Instalação
 1. [Instalação da versão mais recente do Terraform](https://www.udemy.com/course/aws-com-terraform/learn/lecture/12122188#overview)
-2. [Instalação da versão especifíca do Terraform utilizada no curso](https://www.udemy.com/course/aws-com-terraform/learn/lecture/14955968#overview)
+2. [Instalação da versão específica do Terraform utilizada no curso](https://www.udemy.com/course/aws-com-terraform/learn/lecture/14955968#overview)
 3. [Editor de teto](https://www.udemy.com/course/aws-com-terraform/learn/lecture/12122200#overview)
 
 ### Configuração da conta na AWS
@@ -68,7 +68,7 @@ Arquivos do curso de Terraform publicado na Udemy https://www.udemy.com/aws-com-
 11. [Testando o auto scalling group](https://www.udemy.com/course/aws-com-terraform/learn/lecture/13718564#overview)
 12. [Destruindo](https://www.udemy.com/course/aws-com-terraform/learn/lecture/13794560#overview)
 
-### Criando uma plaicação serverless
+### Criando uma aplicação serverless
 1. [Introdução](https://www.udemy.com/course/aws-com-terraform/learn/lecture/13642016#overview)
 2. [Cognito](https://www.udemy.com/course/aws-com-terraform/learn/lecture/13642018#overview)
 3. [DynamoDB](https://www.udemy.com/course/aws-com-terraform/learn/lecture/13642020#overview)
