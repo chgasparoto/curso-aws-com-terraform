@@ -1,6 +1,6 @@
 # DevOps: AWS com Terraform Automatizando sua infraestrutura
 
-Arquivos do curso de Terraform publicado na Udemy https://www.udemy.com/aws-com-terraform
+Arquivos do curso de Terraform publicado na Udemy [https://www.udemy.com/aws-com-terraform](https://www.udemy.com/course/aws-com-terraform/?referralCode=05BE0FCDD1140543679C)
 
 ![Terraform-0-11](https://img.shields.io/badge/terraform-0.11-blueviolet?style=flat-square)
 ![Terraform-0-12](https://img.shields.io/badge/terraform-0.12-blueviolet?style=flat-square)
@@ -103,4 +103,4 @@ Arquivos do curso de Terraform publicado na Udemy https://www.udemy.com/aws-com-
 
 # Cupom
 
-Se você tem interesse em aprender Terraform, pegue este cupom e aproveite 🚀 [60% de desconto](https://www.udemy.com/course/aws-com-terraform/?couponCode=GITHUB). São 6,5 horas de muita informação e aulas práticas!
+Se você tem interesse em aprender Terraform, pegue este cupom e aproveite 🚀(https://www.udemy.com/course/aws-com-terraform/?referralCode=05BE0FCDD1140543679C). São 6,5 horas de muita informação e aulas práticas!
