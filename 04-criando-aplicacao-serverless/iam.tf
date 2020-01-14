@@ -13,15 +13,16 @@ resource "aws_iam_role" "dynamo" {
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_role_policy_attachment" "dynamo" {
-  policy_arn = "${aws_iam_policy.dynamo.arn}"
-  role       = "${aws_iam_role.dynamo.name}"
+  policy_arn = aws_iam_policy.dynamo.arn
+  role       = aws_iam_role.dynamo.name
 }
 
 resource "aws_iam_policy" "dynamo" {
-  policy = "${data.aws_iam_policy_document.dynamo.json}"
+  policy = data.aws_iam_policy_document.dynamo.json
 }
 
 data "aws_iam_policy_document" "dynamo" {
@@ -76,15 +77,16 @@ resource "aws_iam_role" "s3" {
   ]
 }
 EOF
+
 }
 
 resource "aws_iam_role_policy_attachment" "s3" {
-  policy_arn = "${aws_iam_policy.s3.arn}"
-  role       = "${aws_iam_role.s3.name}"
+  policy_arn = aws_iam_policy.s3.arn
+  role       = aws_iam_role.s3.name
 }
 
 resource "aws_iam_policy" "s3" {
-  policy = "${data.aws_iam_policy_document.s3.json}"
+  policy = data.aws_iam_policy_document.s3.json
 }
 
 data "aws_iam_policy_document" "s3" {
@@ -124,3 +126,4 @@ data "aws_iam_policy_document" "s3" {
     ]
   }
 }
+

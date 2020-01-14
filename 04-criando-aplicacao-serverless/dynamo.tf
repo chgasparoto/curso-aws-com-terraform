@@ -1,7 +1,7 @@
 resource "aws_dynamodb_table" "this" {
-  name           = "${var.dbname}"
-  read_capacity  = "${var.read_capacity}"
-  write_capacity = "${var.write_capacity}"
+  name           = var.dbname
+  read_capacity  = var.read_capacity
+  write_capacity = var.write_capacity
   hash_key       = "TodoId"
 
   attribute {
@@ -10,14 +10,14 @@ resource "aws_dynamodb_table" "this" {
   }
 
   tags = {
-    Name        = "${var.dbname}"
-    Environment = "${var.env}"
+    Name        = var.dbname
+    Environment = var.env
   }
 }
 
 resource "aws_dynamodb_table_item" "this" {
-  table_name = "${aws_dynamodb_table.this.name}"
-  hash_key   = "${aws_dynamodb_table.this.hash_key}"
+  table_name = aws_dynamodb_table.this.name
+  hash_key   = aws_dynamodb_table.this.hash_key
 
   item = <<ITEM
 {
@@ -26,4 +26,6 @@ resource "aws_dynamodb_table_item" "this" {
   "Done": {"S": "0"}
 }
 ITEM
+
 }
+

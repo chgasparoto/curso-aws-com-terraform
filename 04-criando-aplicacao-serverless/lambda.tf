@@ -4,12 +4,12 @@ locals {
 }
 
 resource "null_resource" "build_lambda_layers" {
-  triggers {
-    layer_build = "${md5(file("${local.layers_path}/package.json"))}"
+  triggers = {
+    layer_build = filemd5("${local.layers_path}/package.json")
   }
 
   provisioner "local-exec" {
-    working_dir = "${local.layers_path}"
+    working_dir = local.layers_path
     command     = "npm install --production && cd ../ && zip -9 -r --quiet ${local.layer_name} *"
   }
 }
@@ -21,7 +21,7 @@ resource "aws_lambda_layer_version" "this" {
 
   compatible_runtimes = ["nodejs8.10"]
 
-  depends_on = ["null_resource.build_lambda_layers"]
+  depends_on = [null_resource.build_lambda_layers]
 }
 
 data "archive_file" "s3" {
@@ -33,19 +33,19 @@ data "archive_file" "s3" {
 resource "aws_lambda_function" "s3" {
   function_name = "s3"
   handler       = "index.handler"
-  role          = "${aws_iam_role.s3.arn}"
-  runtime       = "nodejs8.10"
-  layers        = ["${aws_lambda_layer_version.this.layer_arn}"]
+  role          = aws_iam_role.s3.arn
+  runtime       = "nodejs12.x"
+  layers        = [aws_lambda_layer_version.this.arn]
 
-  filename         = "${data.archive_file.s3.output_path}"
-  source_code_hash = "${data.archive_file.s3.output_base64sha256}"
+  filename         = data.archive_file.s3.output_path
+  source_code_hash = data.archive_file.s3.output_base64sha256
 
   timeout     = 30
   memory_size = 128
 
   environment {
-    variables {
-      TOPIC_ARN = "${aws_sns_topic.this.arn}"
+    variables = {
+      TOPIC_ARN = aws_sns_topic.this.arn
     }
   }
 }
@@ -53,9 +53,9 @@ resource "aws_lambda_function" "s3" {
 resource "aws_lambda_permission" "s3" {
   statement_id  = "AllowExecutionFromS3Bucket"
   action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.s3.arn}"
+  function_name = aws_lambda_function.s3.arn
   principal     = "s3.amazonaws.com"
-  source_arn    = "${aws_s3_bucket.todo.arn}"
+  source_arn    = aws_s3_bucket.todo.arn
 }
 
 data "archive_file" "dynamo" {
@@ -67,19 +67,19 @@ data "archive_file" "dynamo" {
 resource "aws_lambda_function" "dynamo" {
   function_name = "dynamo"
   handler       = "index.handler"
-  role          = "${aws_iam_role.dynamo.arn}"
-  runtime       = "nodejs8.10"
-  layers        = ["${aws_lambda_layer_version.this.layer_arn}"]
+  role          = aws_iam_role.dynamo.arn
+  runtime       = "nodejs12.x"
+  layers        = [aws_lambda_layer_version.this.arn]
 
-  filename         = "${data.archive_file.dynamo.output_path}"
-  source_code_hash = "${data.archive_file.dynamo.output_base64sha256}"
+  filename         = data.archive_file.dynamo.output_path
+  source_code_hash = data.archive_file.dynamo.output_base64sha256
 
   timeout     = 30
   memory_size = 128
 
   environment {
-    variables {
-      TABLE = "${aws_dynamodb_table.this.name}"
+    variables = {
+      TABLE = aws_dynamodb_table.this.name
     }
   }
 }
@@ -87,7 +87,7 @@ resource "aws_lambda_function" "dynamo" {
 resource "aws_lambda_permission" "dynamo" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.dynamo.arn}"
+  function_name = aws_lambda_function.dynamo.arn
   principal     = "apigateway.amazonaws.com"
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:*/*"
 }
@@ -95,7 +95,8 @@ resource "aws_lambda_permission" "dynamo" {
 resource "aws_lambda_permission" "sns" {
   statement_id  = "AllowExecutionFromSNS"
   action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.dynamo.function_name}"
+  function_name = aws_lambda_function.dynamo.function_name
   principal     = "sns.amazonaws.com"
-  source_arn    = "${aws_sns_topic.this.arn}"
+  source_arn    = aws_sns_topic.this.arn
 }
+
