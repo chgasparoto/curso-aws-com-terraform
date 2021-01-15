@@ -1,6 +1,6 @@
-image_id = "ami-0080e4c5bc078760e"
-type     = "t2.medium"
+image_id = "ami-0233214e13e500f77"
+type     = "t3.medium"
 tags = {
-  Name = "Wordpress"
+  Name = "PHP"
   Env  = "Production"
 }

@@ -13,12 +13,3 @@ provider "aws" {
   region  = var.aws_region
   profile = var.aws_profile
 }
-
-resource "aws_instance" "web" {
-  ami           = var.image_id
-  instance_type = var.type
-
-  # ipv6_addresses = var.ips
-
-  tags = var.tags
-}

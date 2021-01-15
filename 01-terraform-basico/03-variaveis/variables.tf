@@ -12,7 +12,7 @@ variable "aws_profile" {
   default     = "tf014"
 }
 
-# ami-035be7bafff33b6b6
+# https://aws.amazon.com/amazon-linux-ami/
 variable "image_id" {
   type        = string
   description = "The id of the machine image (AMI) to use for the server."
