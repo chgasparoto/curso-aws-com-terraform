@@ -2,12 +2,10 @@
 
 Arquivos do curso de Terraform publicado na Udemy [https://www.udemy.com/aws-com-terraform](https://www.udemy.com/course/aws-com-terraform/?referralCode=05BE0FCDD1140543679C)
 
-![Terraform-0-11](https://img.shields.io/badge/terraform-0.11-blueviolet?style=flat-square)
-![Terraform-0-12](https://img.shields.io/badge/terraform-0.12-blueviolet?style=flat-square)
+![Terraform-0-14](https://img.shields.io/badge/terraform-0.14-blueviolet?style=flat-square)
 ![aws s3](https://img.shields.io/badge/aws-s3-red?style=flat-square)
 ![aws ec2](https://img.shields.io/badge/aws-ec2-green?style=flat-square)
 ![aws lambda](https://img.shields.io/badge/aws-lambda-orange?style=flat-square)
-![aws ecs](https://img.shields.io/badge/aws-ecs--fargate-orange?style=flat-square)
 
 ![Capa do curso](cover.png "Capa do curso")
 
@@ -79,28 +77,7 @@ Arquivos do curso de Terraform publicado na Udemy [https://www.udemy.com/aws-com
 8. [Testando o fluxo completo da aplicação](https://www.udemy.com/course/aws-com-terraform/learn/lecture/13642038#overview)
 9. [Destruindo](https://www.udemy.com/course/aws-com-terraform/learn/lecture/13642042#overview)
 
-### Terraform 0.12
-1. [Instalação](https://www.udemy.com/course/aws-com-terraform/learn/lecture/13642044#overview)
-2. [First-class expressions e mensagens de erros](https://www.udemy.com/course/aws-com-terraform/learn/lecture/13642048#overview)
-3. [For expressions](https://www.udemy.com/course/aws-com-terraform/learn/lecture/13642052#overview)
-4. [Rich types](https://www.udemy.com/course/aws-com-terraform/learn/lecture/13642054#overview)
-5. [Refazendo nosso site estático com a versão 0.12](https://www.udemy.com/course/aws-com-terraform/learn/lecture/13642056#overview)
-
-### Terraform Cloud com AWS ECS Fargate automatizado com shell script
-1. [O que é Terraform Cloud?](https://www.udemy.com/course/aws-com-terraform/learn/lecture/15722454#overview)
-2. [Configurando o Terraform Cloud](https://www.udemy.com/course/aws-com-terraform/learn/lecture/15722456#overview)
-3. [O que é AWS Fargate](https://www.udemy.com/course/aws-com-terraform/learn/lecture/15758378#overview)
-4. [Configuração Webstorm](https://www.udemy.com/course/aws-com-terraform/learn/lecture/15722460#overview)
-5. [Codificando nossa aplicação back-end](https://www.udemy.com/course/aws-com-terraform/learn/lecture/15722462#overview)
-6. [Dockerfile, rodando nossa aplicação no docker](https://www.udemy.com/course/aws-com-terraform/learn/lecture/15758348#overview)
-7. [AWS ECR](https://www.udemy.com/course/aws-com-terraform/learn/lecture/15758354#overview)
-8. [AWS ECS Cluster](https://www.udemy.com/course/aws-com-terraform/learn/lecture/15758358#overview)
-9. [AWS ECS Task](https://www.udemy.com/course/aws-com-terraform/learn/lecture/15758362#overview)
-10. [AWS ECS Service](https://www.udemy.com/course/aws-com-terraform/learn/lecture/15758366#overview)
-11. [AWS ECS Fargate rodando](https://www.udemy.com/course/aws-com-terraform/learn/lecture/15758368#overview)
-12. [AWS ECS Auto scalling](https://www.udemy.com/course/aws-com-terraform/learn/lecture/15758372#overview)
-13. [Automatizando o deploy](https://www.udemy.com/course/aws-com-terraform/learn/lecture/15758374#overview)
 
 # Cupom
 
-Se você tem interesse em aprender Terraform, pegue este cupom e aproveite 🚀(https://www.udemy.com/course/aws-com-terraform/?referralCode=05BE0FCDD1140543679C). São 6,5 horas de muita informação e aulas práticas!
+Se você tem interesse em aprender Terraform, pegue este cupom e aproveite 🚀(https://www.udemy.com/course/aws-com-terraform/?referralCode=05BE0FCDD1140543679C). É muita informação e conta com aulas práticas!
