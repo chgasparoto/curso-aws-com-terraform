@@ -15,10 +15,8 @@ provider "aws" {
 }
 
 resource "aws_instance" "web" {
-  ami           = var.image_id
-  instance_type = var.type
+  ami           = var.instance_ami
+  instance_type = var.instance_type
 
-  # ipv6_addresses = var.ips
-
-  tags = var.tags
+  tags = var.instance_tags
 }

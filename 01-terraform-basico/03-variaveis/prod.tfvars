@@ -1,6 +1,7 @@
-image_id = "ami-0233214e13e500f77"
-type     = "t3.medium"
-tags = {
-  Name = "PHP"
-  Env  = "Production"
+instance_type = "t3.medium"
+envinroment   = "prod"
+instance_tags = {
+  Name    = "Ubuntu"
+  Project = "Curso AWS com Terraform"
+  Env     = "Prod"
 }
