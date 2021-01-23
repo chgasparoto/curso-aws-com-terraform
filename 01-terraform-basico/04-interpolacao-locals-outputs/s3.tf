@@ -1,12 +1,34 @@
 resource "aws_s3_bucket" "this" {
-  bucket = local.service_name
+  bucket = "${random_pet.bucket.id}-${var.environment}"
   tags   = local.common_tags
 }
 
-# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_object#uploading-a-file-to-a-bucket
+resource "aws_s3_bucket" "manual" {
+  bucket = "meubucketcriadonoconsoledaaws123123"
+
+  tags = {
+    Criado    = "14/01/2021"
+    Importado = "23/01/2021"
+    ManagedBy = "Terraform"
+  }
+}
+
 resource "aws_s3_bucket_object" "this" {
-  bucket = aws_s3_bucket.this.bucket
-  key    = "config/ips.json"
-  source = local.ip_filepath
-  etag   = filemd5(local.ip_filepath)
+  bucket       = aws_s3_bucket.this.bucket
+  key          = "config/${local.ip_filepath}"
+  source       = local.ip_filepath
+  etag         = filemd5(local.ip_filepath)
+  content_type = "application/json"
+
+  tags = local.common_tags
+}
+
+resource "aws_s3_bucket_object" "random" {
+  bucket       = aws_s3_bucket.this.bucket
+  key          = "config/${random_pet.bucket.id}.json"
+  source       = local.ip_filepath
+  etag         = filemd5(local.ip_filepath)
+  content_type = "application/json"
+
+  tags = local.common_tags
 }
