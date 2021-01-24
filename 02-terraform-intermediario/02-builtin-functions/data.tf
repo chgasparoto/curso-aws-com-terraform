@@ -10,7 +10,7 @@ data "template_file" "json" {
 }
 
 data "archive_file" "json" {
-  type        = "zip"
+  type        = local.file_ext
   output_path = "${path.module}/files/${local.object_name}.${local.file_ext}"
 
   source {

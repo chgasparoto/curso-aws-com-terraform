@@ -1,10 +1,11 @@
 locals {
-  common_tags = {
-    "Project" = "AWS com Terraform"
-    "Owner"   = "Cleber Gasparoto"
-    "Year"    = "2021"
-  }
+  instance_number = lookup(var.instance_number, var.env)
 
   file_ext    = "zip"
-  object_name = "my-data"
+  object_name = "meu-arquivo-gerado-de-um-template"
+
+  common_tags = {
+    "Owner" = "Cleber Gasparoto"
+    "Year"  = "2021"
+  }
 }

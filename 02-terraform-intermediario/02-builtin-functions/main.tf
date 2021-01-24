@@ -10,10 +10,6 @@ terraform {
 }
 
 provider "aws" {
-  region  = lookup(var.aws_region, var.env)
+  region  = var.aws_region
   profile = "tf014"
-}
-
-resource "random_id" "bucket" {
-  byte_length = 4
 }
