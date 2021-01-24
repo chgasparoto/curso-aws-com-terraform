@@ -27,19 +27,7 @@ resource "aws_s3_bucket" "remote-state" {
     Description = "Stores terraform remote state files"
     ManagedBy   = "Terraform"
     Owner       = "Cleber Gasparoto"
-    CreatedAt   = "2021-01-15"
-  }
-}
-
-resource "aws_dynamodb_table" "locking" {
-  name           = aws_s3_bucket.remote-state.bucket
-  read_capacity  = "5"
-  write_capacity = "5"
-  hash_key       = "LockID"
-
-  attribute {
-    name = "LockID"
-    type = "S"
+    CreatedAt   = "2021-01-24"
   }
 }
 
