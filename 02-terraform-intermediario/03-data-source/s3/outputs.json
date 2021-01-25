@@ -7,11 +7,11 @@
   "arn": {
     "sensitive": false,
     "type": "string",
-    "value": "arn:aws:ec2:eu-central-1:968339500772:instance/i-029160f61f5bc17d0"
+    "value": "arn:aws:ec2:eu-central-1:968339500772:instance/i-005beb3377504089a"
   },
   "id": {
     "sensitive": false,
     "type": "string",
-    "value": "i-029160f61f5bc17d0"
+    "value": "i-005beb3377504089a"
   }
 }
