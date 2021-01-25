@@ -13,15 +13,10 @@ terraform {
     key     = "dev/03-data-sources-s3/terraform.tfstate"
     region  = "eu-central-1"
     profile = "tf014"
-
   }
 }
 
 provider "aws" {
   region  = var.aws_region
   profile = var.aws_profile
-}
-
-resource "random_id" "this" {
-  byte_length = 4
 }
