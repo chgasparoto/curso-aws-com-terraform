@@ -10,17 +10,19 @@ terraform {
 }
 
 provider "aws" {
-  region  = "eu-central-1"
+  region  = lookup(var.aws_region, local.env)
   profile = "tf014"
 }
 
 locals {
-  env = terraform.workspace
+  env = terraform.workspace == "default" ? "dev" : terraform.workspace
 }
 
 resource "aws_instance" "web" {
-  ami           = lookup(var.ami, local.env)
-  instance_type = lookup(var.type, local.env)
+  count = lookup(var.instance, local.env)["number"]
+
+  ami           = lookup(var.instance, local.env)["ami"]
+  instance_type = lookup(var.instance, local.env)["type"]
 
   tags = {
     Name = "Minha máquina web ${local.env}"
