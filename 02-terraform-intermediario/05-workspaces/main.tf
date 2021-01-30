@@ -7,6 +7,14 @@ terraform {
       version = "3.23.0"
     }
   }
+
+  backend "s3" {
+    bucket         = "tfstate-968339500772"
+    key            = "05-workspaces/terraform.tfstate"
+    region         = "eu-central-1"
+    profile        = "tf014"
+    dynamodb_table = "tflock-tfstate-968339500772"
+  }
 }
 
 provider "aws" {
