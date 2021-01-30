@@ -20,9 +20,27 @@ resource "random_pet" "this" {
 
 module "bucket" {
   source = "./s3_module"
+  name   = random_pet.this.id
 
-  name  = random_pet.this.id
+  versioning = {
+    enabled = true
+  }
+}
+
+resource "random_pet" "website" {
+  length = 5
+}
+
+module "website" {
+  source = "./s3_module"
+
+  name  = random_pet.website.id
   files = "${path.root}/website"
+
+  website = {
+    index_document = "index.html"
+    error_document = "error.html"
+  }
 
   policy = <<EOT
 {
@@ -36,15 +54,10 @@ module "bucket" {
                 "s3:GetObject"
             ],
             "Resource": [
-                "arn:aws:s3:::${random_pet.this.id}/*"
+                "arn:aws:s3:::${random_pet.website.id}/*"
             ]
         }
     ]
 }
 EOT
-
-  website = {
-    index_document = "index.html"
-    error_document = "error.html"
-  }
 }

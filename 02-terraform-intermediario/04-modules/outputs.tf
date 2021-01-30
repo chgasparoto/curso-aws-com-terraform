@@ -2,18 +2,22 @@ output "bucket-name" {
   value = module.bucket.name
 }
 
-output "bucket-domain" {
-  value = module.bucket.domain_name
-}
-
 output "bucket-arn" {
   value = module.bucket.arn
 }
 
-output "bucket-website" {
-  value = module.bucket.website
+output "bucket-website-name" {
+  value = module.website.name
 }
 
-output "bucket-files" {
-  value = module.bucket.files
+output "bucket-website-url" {
+  value = module.website.website
+}
+
+output "bucket-website-files" {
+  value = module.website.files
+}
+
+output "bucket-website-arn" {
+  value = module.website.arn
 }

@@ -15,17 +15,6 @@ variable "policy" {
   default     = null
 }
 
-variable "versioning" {
-  description = "Map containing versioning configuration."
-  type        = map(string)
-  default     = {}
-}
-
-variable "website" {
-  type    = map(string)
-  default = {}
-}
-
 variable "tags" {
   type        = map(string)
   description = ""
@@ -40,4 +29,15 @@ variable "key_prefix" {
 variable "files" {
   type    = string
   default = ""
+}
+
+variable "versioning" {
+  description = "Map containing versioning configuration."
+  type        = map(string)
+  default     = {}
+}
+
+variable "website" {
+  type    = map(string)
+  default = {}
 }
