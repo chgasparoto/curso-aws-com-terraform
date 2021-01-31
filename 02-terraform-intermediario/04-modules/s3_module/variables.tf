@@ -38,6 +38,13 @@ variable "versioning" {
 }
 
 variable "website" {
-  type    = map(string)
-  default = {}
+  description = "Map containing website configuration."
+  type        = map(string)
+  default     = {}
+}
+
+variable "logging" {
+  description = "Map containing logging configuration."
+  type        = map(string)
+  default     = {}
 }

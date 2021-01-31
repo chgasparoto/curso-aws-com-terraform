@@ -22,6 +22,14 @@ resource "aws_s3_bucket" "this" {
       routing_rules            = lookup(website.value, "routing_rules", null)
     }
   }
+
+  dynamic "logging" {
+    for_each = length(keys(var.logging)) == 0 ? [] : [var.logging]
+    content {
+      target_bucket = lookup(logging.value, "target_bucket", null)
+      target_prefix = lookup(logging.value, "target_prefix", null)
+    }
+  }
 }
 
 module "objects" {
