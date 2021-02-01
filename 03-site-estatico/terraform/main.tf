@@ -10,6 +10,10 @@ terraform {
       source  = "hashicorp/random"
       version = "3.0.1"
     }
+    template = {
+      source  = "hashicorp/template"
+      version = "2.2.0"
+    }
   }
 
   backend "s3" {}
@@ -18,6 +22,12 @@ terraform {
 provider "aws" {
   region  = var.aws_region
   profile = var.aws_profile
+}
+
+provider "aws" {
+  region  = "us-east-1"
+  profile = "tf014"
+  alias   = "us-east-1"
 }
 
 resource "random_pet" "website" {

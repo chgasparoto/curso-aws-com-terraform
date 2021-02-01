@@ -1,8 +1,21 @@
+resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
+  comment = local.domain
+}
+
 resource "aws_cloudfront_distribution" "this" {
   enabled             = true
   is_ipv6_enabled     = true
   comment             = "Managed by Terraform"
   default_root_object = "index.html"
+
+  logging_config {
+    include_cookies = true
+    bucket          = module.logs.domain_name
+    prefix          = "cdn/"
+  }
+
+  aliases = [local.domain]
+
 
   default_cache_behavior {
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
@@ -26,6 +39,10 @@ resource "aws_cloudfront_distribution" "this" {
   origin {
     domain_name = local.regional_domain
     origin_id   = local.regional_domain
+
+    s3_origin_config {
+      origin_access_identity = aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path
+    }
   }
 
   restrictions {
@@ -35,7 +52,8 @@ resource "aws_cloudfront_distribution" "this" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn = aws_acm_certificate.cert.arn
+    ssl_support_method  = "sni-only"
   }
 
   tags = local.common_tags

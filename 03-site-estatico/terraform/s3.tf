@@ -2,7 +2,7 @@ module "logs" {
   source = "../../02-terraform-intermediario/04-modules/s3_module"
 
   name = "${local.domain}-logs"
-  acl = "log-delivery-write"
+  acl  = "log-delivery-write"
 }
 
 module "website" {
@@ -24,17 +24,17 @@ module "website" {
 
   logging = {
     target_bucket = module.logs.name
-    target_prefix =  "access"
+    target_prefix = "access/"
   }
 }
 
 module "redirect" {
   source = "../../02-terraform-intermediario/04-modules/s3_module"
 
-  name = "www.${module.website.name}"
+  name = "www.${local.domain}"
   acl  = "public-read"
 
   website = {
-    redirect_all_requests_to = module.website.website
+    redirect_all_requests_to = local.domain
   }
 }
