@@ -1,11 +1,6 @@
-locals {
-  layer_name  = "terraform_layer.zip"
-  layers_path = "${path.module}/layers/nodejs"
-}
-
 resource "null_resource" "build_lambda_layers" {
   triggers = {
-    layer_build = md5(file("${local.layers_path}/package.json"))
+    layer_build = filemd5("${local.layers_path}/package.json")
   }
 
   provisioner "local-exec" {
@@ -16,7 +11,7 @@ resource "null_resource" "build_lambda_layers" {
 
 resource "aws_lambda_layer_version" "joi" {
   filename    = "${local.layers_path}/../${local.layer_name}"
-  layer_name  = "terraform-layer"
+  layer_name  = "joi-layer"
   description = "joi: ^17.3.0"
 
   compatible_runtimes = ["nodejs12.x"]
@@ -26,8 +21,8 @@ resource "aws_lambda_layer_version" "joi" {
 
 data "archive_file" "s3" {
   type        = "zip"
-  source_file = "${path.module}/lambdas/s3/index.js"
-  output_path = "${path.module}/lambdas/s3/index.js.zip"
+  source_file = "${local.lambdas_path}/s3/index.js"
+  output_path = "${local.lambdas_path}/s3/artefact.zip"
 }
 
 resource "aws_lambda_function" "s3" {
@@ -60,8 +55,8 @@ resource "aws_lambda_permission" "s3" {
 
 data "archive_file" "dynamo" {
   type        = "zip"
-  source_file = "${path.module}/lambdas/dynamo/index.js"
-  output_path = "${path.module}/lambdas/dynamo/index.js.zip"
+  source_file = "${local.lambdas_path}/dynamo/index.js"
+  output_path = "${local.lambdas_path}/dynamo/artefact.zip"
 }
 
 resource "aws_lambda_function" "dynamo" {

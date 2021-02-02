@@ -2,9 +2,15 @@ resource "aws_api_gateway_rest_api" "this" {
   name = var.service_name
 }
 
-resource "aws_api_gateway_resource" "this" {
+resource "aws_api_gateway_resource" "v1" {
   rest_api_id = aws_api_gateway_rest_api.this.id
   parent_id   = aws_api_gateway_rest_api.this.root_resource_id
+  path_part   = "v1"
+}
+
+resource "aws_api_gateway_resource" "this" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  parent_id   = aws_api_gateway_resource.v1.id
   path_part   = "todos"
 }
 

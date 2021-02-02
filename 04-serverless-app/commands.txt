@@ -1,7 +1,0 @@
-aws cognito-idp sign-up --region eu-central-1 --client-id 4jckm37noqrnin3rblcmdnvq1e --username admin@example.com
---password password123 --profile tf014
-
-aws cognito-idp admin-confirm-sign-up --region eu-central-1 --user-pool-id eu-central-1_iFGz9eioQ --username admin@example
-.com --profile tf014
-
-aws cognito-idp admin-initiate-auth --region eu-central-1 --cli-input-json file://auth.json --profile tf014
