@@ -4,14 +4,14 @@ data "template_file" "s3-public-policy" {
 }
 
 module "logs" {
-  source = "../../02-terraform-intermediario/04-modules/s3_module"
+  source = "github.com/chgasparoto/terraform-s3-object-notification"
 
   name = "${local.domain}-logs"
   acl  = "log-delivery-write"
 }
 
 module "website" {
-  source = "../../02-terraform-intermediario/04-modules/s3_module"
+  source = "github.com/chgasparoto/terraform-s3-object-notification"
 
   name   = local.domain
   acl    = "public-read"
@@ -34,7 +34,7 @@ module "website" {
 }
 
 module "redirect" {
-  source = "../../02-terraform-intermediario/04-modules/s3_module"
+  source = "github.com/chgasparoto/terraform-s3-object-notification"
 
   name = "www.${local.domain}"
   acl  = "public-read"

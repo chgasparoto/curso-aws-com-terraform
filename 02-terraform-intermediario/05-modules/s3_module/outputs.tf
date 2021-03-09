@@ -27,5 +27,5 @@ output "hosted_zone_id" {
 }
 
 output "files" {
-  value = module.objects
+  value = [for filename, data in module.objects : filename]
 }
