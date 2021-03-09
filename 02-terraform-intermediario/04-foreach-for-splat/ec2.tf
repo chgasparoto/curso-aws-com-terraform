@@ -1,3 +1,9 @@
+data "aws_ami" "ubuntu" {
+  owners      = ["amazon"]
+  most_recent = true
+  name_regex  = "ubuntu"
+}
+
 resource "aws_instance" "this" {
   for_each = {
     web = {
@@ -10,7 +16,7 @@ resource "aws_instance" "this" {
     }
   }
 
-  ami           = "ami-0ce70c4057dc39200"
+  ami           = data.aws_ami.ubuntu.id
   instance_type = lookup(each.value, "type", null)
 
   tags = {
