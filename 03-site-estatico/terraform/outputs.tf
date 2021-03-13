@@ -1,5 +1,5 @@
 output "website-url" {
-  value = module.website.website
+  value = var.custom_domain == "" ?  module.website.website : var.custom_domain
 }
 
 output "cdn-url" {

@@ -13,5 +13,5 @@ variable "aws_profile" {
 variable "custom_domain" {
   type        = string
   description = ""
-  default     = "clashflix.com"
+  default     = ""
 }

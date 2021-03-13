@@ -1,5 +1,5 @@
 terraform {
-  required_version = "0.14.5"
+  required_version = "0.14.7"
 
   required_providers {
     aws = {
@@ -32,4 +32,18 @@ provider "aws" {
 
 resource "random_pet" "website" {
   length = 5
+}
+
+resource "null_resource" "build_website" {
+  triggers = {
+    dir_sha1 = sha1(join("", [
+      for f in fileset(local.website_filepath, "**") : filesha1("${local.website_filepath}/${f}")
+      ]
+    ))
+  }
+
+  provisioner "local-exec" {
+    working_dir = "${path.module}/../website"
+    command     = "npm ci && npm run build"
+  }
 }

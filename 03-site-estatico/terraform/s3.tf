@@ -8,20 +8,25 @@ module "logs" {
 
   name = "${local.domain}-logs"
   acl  = "log-delivery-write"
+
+  force_destroy = var.custom_domain == ""
 }
 
 module "website" {
+  depends_on = [null_resource.build_website]
+
   source = "github.com/chgasparoto/terraform-s3-object-notification"
 
-  name   = local.domain
-  acl    = "public-read"
-  policy = data.template_file.s3-public-policy.rendered
+  name          = local.domain
+  acl           = "public-read"
+  policy        = data.template_file.s3-public-policy.rendered
+  force_destroy = var.custom_domain == ""
 
   versioning = {
     enabled = true
   }
 
-  files = "${path.root}/../website/build"
+  filepath = "${path.root}/../website/build"
   website = {
     index_document = "index.html"
     error_document = "index.html"
@@ -36,10 +41,11 @@ module "website" {
 module "redirect" {
   source = "github.com/chgasparoto/terraform-s3-object-notification"
 
-  name = "www.${local.domain}"
-  acl  = "public-read"
+  name          = "www.${local.domain}"
+  acl           = "public-read"
+  force_destroy = var.custom_domain == ""
 
   website = {
-    redirect_all_requests_to = local.domain
+    redirect_all_requests_to = var.custom_domain != "" ? var.custom_domain : module.website.website
   }
 }

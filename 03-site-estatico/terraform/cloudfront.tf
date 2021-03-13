@@ -14,8 +14,7 @@ resource "aws_cloudfront_distribution" "this" {
     prefix          = "cdn/"
   }
 
-  aliases = [local.domain]
-
+  aliases = var.custom_domain != "" ? [local.domain] : []
 
   default_cache_behavior {
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
@@ -51,9 +50,19 @@ resource "aws_cloudfront_distribution" "this" {
     }
   }
 
-  viewer_certificate {
-    acm_certificate_arn = aws_acm_certificate.cert.arn
-    ssl_support_method  = "sni-only"
+  dynamic "viewer_certificate" {
+    for_each = var.custom_domain != "" ? [] : [0]
+    content {
+      cloudfront_default_certificate = true
+    }
+  }
+
+  dynamic "viewer_certificate" {
+    for_each = var.custom_domain != "" ? [0] : []
+    content {
+      acm_certificate_arn = aws_acm_certificate.cert[0].arn
+      ssl_support_method  = "sni-only"
+    }
   }
 
   tags = local.common_tags
