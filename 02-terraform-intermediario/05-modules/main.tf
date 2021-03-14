@@ -21,10 +21,6 @@ resource "random_pet" "this" {
 module "bucket" {
   source = "./s3_module"
   name   = random_pet.this.id
-
-  versioning = {
-    enabled = true
-  }
 }
 
 resource "random_pet" "website" {

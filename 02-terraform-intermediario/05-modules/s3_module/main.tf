@@ -4,17 +4,8 @@ resource "aws_s3_bucket" "this" {
   policy = var.policy
   tags   = var.tags
 
-  dynamic "versioning" {
-    for_each = length(keys(var.versioning)) == 0 ? [] : [var.versioning]
-    content {
-      enabled    = lookup(versioning.value, "enabled", null)
-      mfa_delete = lookup(versioning.value, "mfa_delete", null)
-    }
-  }
-
   dynamic "website" {
     for_each = length(keys(var.website)) == 0 ? [] : [var.website]
-
     content {
       index_document           = lookup(website.value, "index_document", null)
       error_document           = lookup(website.value, "error_document", null)
@@ -23,11 +14,11 @@ resource "aws_s3_bucket" "this" {
     }
   }
 
-  dynamic "logging" {
-    for_each = length(keys(var.logging)) == 0 ? [] : [var.logging]
+  dynamic "versioning" {
+    for_each = length(keys(var.website)) == 0 ? [] : [var.website]
     content {
-      target_bucket = lookup(logging.value, "target_bucket", null)
-      target_prefix = lookup(logging.value, "target_prefix", null)
+      enabled    = lookup(versioning.value, "enabled", null)
+      mfa_delete = lookup(versioning.value, "mfa_delete", null)
     }
   }
 }

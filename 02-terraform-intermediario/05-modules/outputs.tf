@@ -14,10 +14,10 @@ output "bucket-website-url" {
   value = module.website.website
 }
 
-output "bucket-website-files" {
-  value = module.website.files
-}
-
 output "bucket-website-arn" {
   value = module.website.arn
+}
+
+output "bucket-website-files" {
+  value = module.website.files
 }
