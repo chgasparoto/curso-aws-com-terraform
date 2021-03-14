@@ -7,18 +7,17 @@ resource "aws_cloudfront_distribution" "this" {
   is_ipv6_enabled     = true
   comment             = "Managed by Terraform"
   default_root_object = "index.html"
+  aliases             = local.has_domain ? [local.domain] : []
 
   logging_config {
-    include_cookies = true
     bucket          = module.logs.domain_name
-    prefix          = "cdn/"
+    prefix          = "cnd/"
+    include_cookies = true
   }
 
-  aliases = var.custom_domain != "" ? [local.domain] : []
-
   default_cache_behavior {
-    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
-    cached_methods         = ["GET", "HEAD"]
+    allowed_methods        = ["HEAD", "GET", "OPTIONS"]
+    cached_methods         = ["HEAD", "GET"]
     target_origin_id       = local.regional_domain
     viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
@@ -28,7 +27,6 @@ resource "aws_cloudfront_distribution" "this" {
     forwarded_values {
       query_string = false
       headers      = ["Origin"]
-
       cookies {
         forward = "none"
       }
@@ -51,16 +49,16 @@ resource "aws_cloudfront_distribution" "this" {
   }
 
   dynamic "viewer_certificate" {
-    for_each = var.custom_domain != "" ? [] : [0]
+    for_each = local.has_domain ? [] : [0]
     content {
       cloudfront_default_certificate = true
     }
   }
 
   dynamic "viewer_certificate" {
-    for_each = var.custom_domain != "" ? [0] : []
+    for_each = local.has_domain ? [0] : []
     content {
-      acm_certificate_arn = aws_acm_certificate.cert[0].arn
+      acm_certificate_arn = aws_acm_certificate.this[0].arn
       ssl_support_method  = "sni-only"
     }
   }

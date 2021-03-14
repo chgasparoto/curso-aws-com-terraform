@@ -1,14 +1,14 @@
 terraform {
-  required_version = "0.14.7"
+  required_version = "0.14.8"
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "3.26.0"
+      version = "3.32.0"
     }
     random = {
       source  = "hashicorp/random"
-      version = "3.0.1"
+      version = "3.1.0"
     }
     template = {
       source  = "hashicorp/template"
@@ -26,7 +26,7 @@ provider "aws" {
 
 provider "aws" {
   region  = "us-east-1"
-  profile = "tf014"
+  profile = var.aws_profile
   alias   = "us-east-1"
 }
 
@@ -34,16 +34,14 @@ resource "random_pet" "website" {
   length = 5
 }
 
-resource "null_resource" "build_website" {
+resource "null_resource" "website" {
   triggers = {
-    dir_sha1 = sha1(join("", [
-      for f in fileset(local.website_filepath, "**") : filesha1("${local.website_filepath}/${f}")
-      ]
-    ))
+    # https://stackoverflow.com/a/66501021/2614584
+    dir_sha1 = sha1(join("", [for f in fileset("${local.website_filepath}/src", "**") : filesha1("${local.website_filepath}/src/${f}")]))
   }
 
   provisioner "local-exec" {
-    working_dir = "${path.module}/../website"
+    working_dir = local.website_filepath
     command     = "npm ci && npm run build"
   }
 }

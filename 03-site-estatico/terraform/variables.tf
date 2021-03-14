@@ -10,7 +10,7 @@ variable "aws_profile" {
   default     = "tf014"
 }
 
-variable "custom_domain" {
+variable "domain" {
   type        = string
   description = ""
   default     = ""

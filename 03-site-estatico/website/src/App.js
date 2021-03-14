@@ -11,12 +11,31 @@ function App() {
         </p>
         <a
           className="App-link"
-          href="https://reactjs.org"
+          href="https://www.youtube.com/channel/UCnP-0M4m5peN-7aLfs4pScA"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React
+          Canal do Youtube
         </a>
+        <br/>
+        <a
+            className="App-link"
+            href="https://clebergasparoto.com"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+          Site Pessoal
+        </a>
+        <br/>
+        <a
+            className="App-link"
+            href="https://twitter.com/clebergasparoto"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+          Twitter
+        </a>
+
       </header>
     </div>
   );

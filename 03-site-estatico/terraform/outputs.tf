@@ -1,5 +1,5 @@
 output "website-url" {
-  value = var.custom_domain == "" ?  module.website.website : var.custom_domain
+  value = local.has_domain ? var.domain : module.website.website
 }
 
 output "cdn-url" {
