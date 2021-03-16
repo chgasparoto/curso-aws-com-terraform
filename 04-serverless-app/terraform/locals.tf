@@ -1,11 +1,11 @@
 locals {
-  layer_name   = "layer.zip"
-  layers_path  = "${path.module}/../app/layers/nodejs"
   lambdas_path = "${path.module}/../app/lambdas"
+  layers_path  = "${path.module}/../app/layers/nodejs"
+  layer_name   = "joi.zip"
 
   common_tags = {
     Project   = "TODO Serverless App"
-    CreatedAt = "2020-02-01"
+    CreatedAt = "2020-03-16"
     ManagedBy = "Terraform"
     Owner     = "Cleber Gasparoto"
     Service   = var.service_name

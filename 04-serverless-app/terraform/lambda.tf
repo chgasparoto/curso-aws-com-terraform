@@ -10,11 +10,10 @@ resource "null_resource" "build_lambda_layers" {
 }
 
 resource "aws_lambda_layer_version" "joi" {
-  filename    = "${local.layers_path}/../${local.layer_name}"
-  layer_name  = "joi-layer"
-  description = "joi: ^17.3.0"
-
-  compatible_runtimes = ["nodejs12.x"]
+  layer_name          = "joi-layer"
+  description         = "joi: 17.3.0"
+  filename            = "${local.layers_path}/../${local.layer_name}"
+  compatible_runtimes = ["nodejs14.x"]
 
   depends_on = [null_resource.build_lambda_layers]
 }
@@ -22,27 +21,27 @@ resource "aws_lambda_layer_version" "joi" {
 data "archive_file" "s3" {
   type        = "zip"
   source_file = "${local.lambdas_path}/s3/index.js"
-  output_path = "${local.lambdas_path}/s3/artefact.zip"
+  output_path = "files/s3-artefact.zip"
 }
 
 resource "aws_lambda_function" "s3" {
   function_name = "s3"
   handler       = "index.handler"
   role          = aws_iam_role.s3.arn
-  runtime       = "nodejs12.x"
-  layers        = [aws_lambda_layer_version.joi.arn]
+  runtime       = "nodejs14.x"
 
   filename         = data.archive_file.s3.output_path
   source_code_hash = data.archive_file.s3.output_base64sha256
 
-  timeout     = 30
-  memory_size = 128
+  layers = [aws_lambda_layer_version.joi.arn]
 
   environment {
     variables = {
       TOPIC_ARN = aws_sns_topic.this.arn
     }
   }
+
+  tags = local.common_tags
 }
 
 resource "aws_lambda_permission" "s3" {
@@ -56,15 +55,14 @@ resource "aws_lambda_permission" "s3" {
 data "archive_file" "dynamo" {
   type        = "zip"
   source_file = "${local.lambdas_path}/dynamo/index.js"
-  output_path = "${local.lambdas_path}/dynamo/artefact.zip"
+  output_path = "files/dynamo-artefact.zip"
 }
 
 resource "aws_lambda_function" "dynamo" {
   function_name = "dynamo"
   handler       = "index.handler"
   role          = aws_iam_role.dynamo.arn
-  runtime       = "nodejs12.x"
-  layers        = [aws_lambda_layer_version.joi.arn]
+  runtime       = "nodejs14.x"
 
   filename         = data.archive_file.dynamo.output_path
   source_code_hash = data.archive_file.dynamo.output_base64sha256

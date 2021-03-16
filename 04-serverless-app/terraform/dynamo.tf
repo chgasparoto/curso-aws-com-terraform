@@ -1,8 +1,8 @@
 resource "aws_dynamodb_table" "this" {
+  hash_key       = "TodoId"
   name           = var.service_name
   read_capacity  = 5
   write_capacity = 5
-  hash_key       = "TodoId"
 
   attribute {
     name = "TodoId"
@@ -12,7 +12,7 @@ resource "aws_dynamodb_table" "this" {
   tags = local.common_tags
 }
 
-resource "aws_dynamodb_table_item" "this" {
+resource "aws_dynamodb_table_item" "todo" {
   table_name = aws_dynamodb_table.this.name
   hash_key   = aws_dynamodb_table.this.hash_key
 
@@ -23,4 +23,5 @@ resource "aws_dynamodb_table_item" "this" {
   "Done": {"S": "0"}
 }
 ITEM
+
 }

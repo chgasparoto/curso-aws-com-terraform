@@ -4,8 +4,9 @@ resource "aws_cognito_user_pool" "this" {
 }
 
 resource "aws_cognito_user_pool_client" "this" {
-  name                                 = "website"
-  user_pool_id                         = aws_cognito_user_pool.this.id
+  name         = var.service_name
+  user_pool_id = aws_cognito_user_pool.this.id
+
   generate_secret                      = false
   allowed_oauth_flows                  = ["implicit"]
   allowed_oauth_flows_user_pool_client = true

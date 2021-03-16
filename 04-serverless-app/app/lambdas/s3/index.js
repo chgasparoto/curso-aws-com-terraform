@@ -22,8 +22,9 @@ const getFileContent = async (S3, bucket, filename) => {
     return JSON.parse(file.Body.toString('ascii'))
 }
 
-const isValidItem = (data) => {
-    return Joi.validate(data, schema).error === null
+const isItemValid = (data) => {
+    const isValid = schema.validate(data)
+    return isValid.error === undefined
 }
 
 const publish = async (SNS, payload) => {
@@ -56,10 +57,12 @@ exports.handler = async (event) => {
 
     const { s3 } = event.Records[0]
     const content = await getFileContent(S3, s3.bucket.name, s3.object.key)
+    let count = 0
 
     for (let item of content) {
-        if (!isValidItem(item)) {
+        if (!isItemValid(item)) {
             console.log(`Invalid item found: ${JSON.stringify(item)}`)
+            return false
         }
 
         await publish(SNS, {
@@ -67,7 +70,9 @@ exports.handler = async (event) => {
             subject: 'Data from S3',
             topic: topicArn
         })
+
+        count++
     }
 
-    return `Published ${content.length} messages to the Topic.`
+    return `Published ${count} messages to the Topic.`
 }
