@@ -18,7 +18,7 @@ resource "aws_autoscaling_group" "this" {
   health_check_grace_period = 300
   health_check_type         = "ELB"
   force_delete              = true
-  target_group_arns         = [aws_lb_target_group.tg.arn]
+  target_group_arns         = [aws_lb_target_group.this.arn]
   enabled_metrics           = var.enabled_metrics
 }
 
@@ -48,7 +48,5 @@ resource "aws_instance" "jenkins" {
   subnet_id              = aws_subnet.private_b.id
   availability_zone      = "${var.aws_region}b"
 
-  tags = {
-    Name = "Jenkins Machine"
-  }
+  tags = merge(local.common_tags, { Name = "Jenkins Machine" })
 }

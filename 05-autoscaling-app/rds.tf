@@ -2,9 +2,7 @@ resource "aws_db_subnet_group" "default" {
   name       = "main"
   subnet_ids = [aws_subnet.private_a.id, aws_subnet.private_b.id]
 
-  tags = {
-    Name = "My DB subnet group"
-  }
+  tags = merge(local.common_tags, { Name = "DB subnet group" })
 }
 
 resource "aws_db_instance" "web" {
