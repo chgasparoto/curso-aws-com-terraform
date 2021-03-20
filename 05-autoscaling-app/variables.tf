@@ -22,30 +22,14 @@ variable "service_name" {
   default     = "autoscaling-app"
 }
 
-variable "ami" {
-  default = "ami-0233214e13e500f77"
-}
-
 variable "instance_type" {
-  default = "t3.micro"
+  type        = string
+  description = ""
+  default     = "t3.micro"
 }
 
-variable "key_pair" {
-  default = "cleber"
-}
-
-variable "enabled_metrics" {
-  description = "A list of metrics to collect. The allowed values are GroupMinSize, GroupMaxSize, GroupDesiredCapacity, GroupInServiceInstances, GroupPendingInstances, GroupStandbyInstances, GroupTerminatingInstances, GroupTotalInstances"
-  type        = list(string)
-
-  default = [
-    "GroupMinSize",
-    "GroupMaxSize",
-    "GroupDesiredCapacity",
-    "GroupInServiceInstances",
-    "GroupPendingInstances",
-    "GroupStandbyInstances",
-    "GroupTerminatingInstances",
-    "GroupTotalInstances",
-  ]
+variable "instance_key_name" {
+  type        = string
+  description = ""
+  default     = "cleber_kp"
 }

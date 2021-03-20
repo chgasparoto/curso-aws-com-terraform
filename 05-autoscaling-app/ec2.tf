@@ -1,25 +1,46 @@
-resource "aws_launch_configuration" "this" {
-  name_prefix                 = "autoscaling-launcher"
-  image_id                    = var.ami
-  instance_type               = var.instance_type
-  key_name                    = var.key_pair
-  security_groups             = [aws_security_group.autoscaling.id]
-  associate_public_ip_address = true
+data "aws_ami" "ubuntu" {
+  owners      = ["amazon"]
+  most_recent = true
+  name_regex  = "ubuntu"
 
-  user_data = file("ec2_setup.sh")
+  filter {
+    name   = "architecture"
+    values = ["x86_64"]
+  }
+}
+
+resource "aws_launch_template" "this" {
+  name_prefix   = "terraform-"
+  image_id      = data.aws_ami.ubuntu.id
+  instance_type = var.instance_type
+  key_name      = var.instance_key_name
+  user_data     = filebase64("ec2_setup.sh")
+
+  monitoring {
+    enabled = true
+  }
+
+  network_interfaces {
+    associate_public_ip_address = true
+    delete_on_termination       = true
+    security_groups             = [aws_security_group.autoscaling.id]
+  }
 }
 
 resource "aws_autoscaling_group" "this" {
   name                      = "terraform-autoscaling"
-  vpc_zone_identifier       = [aws_subnet.public_a.id, aws_subnet.public_b.id]
-  launch_configuration      = aws_launch_configuration.this.name
-  min_size                  = 2
+  vpc_zone_identifier       = [aws_subnet.this["pub_a"].id, aws_subnet.this["pub_b"].id]
   max_size                  = 5
-  health_check_grace_period = 300
+  min_size                  = 2
+  health_check_grace_period = 240
   health_check_type         = "ELB"
   force_delete              = true
-  target_group_arns         = [aws_lb_target_group.this.arn]
-  enabled_metrics           = var.enabled_metrics
+  target_group_arns         = [aws_lb_target_group.this.id]
+
+  launch_template {
+    id      = aws_launch_template.this.id
+    version = aws_launch_template.this.latest_version
+  }
 }
 
 resource "aws_autoscaling_policy" "scaleup" {
@@ -27,7 +48,7 @@ resource "aws_autoscaling_policy" "scaleup" {
   autoscaling_group_name = aws_autoscaling_group.this.name
   adjustment_type        = "ChangeInCapacity"
   scaling_adjustment     = "1"
-  cooldown               = "300"
+  cooldown               = "180"
   policy_type            = "SimpleScaling"
 }
 
@@ -36,16 +57,16 @@ resource "aws_autoscaling_policy" "scaledown" {
   autoscaling_group_name = aws_autoscaling_group.this.name
   adjustment_type        = "ChangeInCapacity"
   scaling_adjustment     = "-1"
-  cooldown               = "300"
+  cooldown               = "180"
   policy_type            = "SimpleScaling"
 }
 
 resource "aws_instance" "jenkins" {
-  ami           = var.ami
+  ami           = data.aws_ami.ubuntu.id
   instance_type = var.instance_type
 
-  vpc_security_group_ids = [aws_security_group.db.id]
-  subnet_id              = aws_subnet.private_b.id
+  vpc_security_group_ids = [aws_security_group.jenkins.id]
+  subnet_id              = aws_subnet.this["pvt_b"].id
   availability_zone      = "${var.aws_region}b"
 
   tags = merge(local.common_tags, { Name = "Jenkins Machine" })

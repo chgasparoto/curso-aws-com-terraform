@@ -1,7 +1,7 @@
 resource "aws_lb" "this" {
-  name            = "ALB"
+  name            = "Terraform-ALB"
   security_groups = [aws_security_group.alb.id]
-  subnets         = [aws_subnet.public_a.id, aws_subnet.public_b.id]
+  subnets         = [aws_subnet.this["pub_a"].id, aws_subnet.this["pub_b"].id]
 
   tags = merge(local.common_tags, { Name = "Terraform ALB" })
 }
