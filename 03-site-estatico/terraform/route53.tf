@@ -35,13 +35,13 @@ resource "aws_route53_record" "www" {
 resource "aws_route53_record" "cert_validation" {
   provider = aws.us-east-1
 
-  for_each = {
+  for_each = local.has_domain ? {
     for dvo in aws_acm_certificate.this[0].domain_validation_options : dvo.domain_name => {
       name   = dvo.resource_record_name
       record = dvo.resource_record_value
       type   = dvo.resource_record_type
     }
-  }
+  } : {}
 
   allow_overwrite = true
   name            = each.value.name

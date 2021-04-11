@@ -35,7 +35,15 @@ function App() {
         >
           Twitter
         </a>
-
+        <br/>
+        <a
+            className="App-link"
+            href="https://github.com/chgasparoto"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+          Github
+        </a>
       </header>
     </div>
   );

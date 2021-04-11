@@ -33,15 +33,3 @@ provider "aws" {
 resource "random_pet" "website" {
   length = 5
 }
-
-resource "null_resource" "website" {
-  triggers = {
-    # https://stackoverflow.com/a/66501021/2614584
-    dir_sha1 = sha1(join("", [for f in fileset("${local.website_filepath}/src", "**") : filesha1("${local.website_filepath}/src/${f}")]))
-  }
-
-  provisioner "local-exec" {
-    working_dir = local.website_filepath
-    command     = "npm ci && npm run build"
-  }
-}

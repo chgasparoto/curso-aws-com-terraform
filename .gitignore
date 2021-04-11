@@ -33,3 +33,4 @@ website/vendor
 node_modules/
 *.zip
 tfplan.out
+plan.tfout

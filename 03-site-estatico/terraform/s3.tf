@@ -12,8 +12,6 @@ module "logs" {
 }
 
 module "website" {
-  depends_on = [null_resource.website]
-
   source        = "github.com/chgasparoto/terraform-s3-object-notification"
   name          = local.domain
   acl           = "public-read"
