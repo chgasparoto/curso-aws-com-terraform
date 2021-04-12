@@ -11,10 +11,10 @@ if [ "$1" != "" ]; then
 fi
 
 echo "----------------------------------------"
-#echo "Creating an optimized production React App build..."
-#cd ../website || return
-#npm ci
-#npm run build
+echo "Creating an optimized production React App build..."
+cd ../website || return
+npm ci
+npm run build
 echo "----------------------------------------"
 cd ../terraform || return
 echo "Formatting terraform files"
