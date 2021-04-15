@@ -1,4 +1,4 @@
-variable "envinroment" {
+variable "environment" {
   type        = string
   description = ""
 }
