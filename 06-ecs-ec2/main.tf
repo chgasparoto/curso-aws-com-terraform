@@ -12,6 +12,16 @@ terraform {
     }
   }
 
+  default_tags {
+    tags = {
+      Project   = "Curso AWS com Terraform"
+      CreatedAt = "2020-05-17"
+      ManagedBy = "Terraform"
+      Owner     = "Cleber Gasparoto"
+      Service   = "Auto Scaling App with ECS EC2"
+    }
+  }
+
   backend "s3" {}
 }
 
