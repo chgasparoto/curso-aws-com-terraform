@@ -29,7 +29,7 @@ variable "app_name" {
 }
 
 variable "app_folder" {
-  default = "../app"
+  default = "../../app"
 }
 
 variable "az_count" {
