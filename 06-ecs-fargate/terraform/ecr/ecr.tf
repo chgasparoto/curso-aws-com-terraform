@@ -4,12 +4,12 @@ resource "aws_ecr_repository" "this" {
 
 resource "null_resource" "docker" {
   triggers = {
-    app_md5 = filemd5("${var.app_folder}/server.js")
+    time = timestamp()
   }
 
   provisioner "local-exec" {
     working_dir = var.app_folder
-    command     = "$(aws ecr get-login --no-include-email --region ${var.region})"
+    command     = "$(aws ecr get-login --no-include-email --region ${var.aws_region})"
   }
 
   provisioner "local-exec" {

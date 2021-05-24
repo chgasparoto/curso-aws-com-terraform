@@ -16,17 +16,16 @@ terraform {
 }
 
 provider "aws" {
-  region  = var.aws_region
-  profile = var.aws_profile
+  region = var.aws_region
 
   //@link: https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider
   default_tags {
     tags = {
       Project   = "Curso AWS com Terraform"
-      CreatedAt = "2020-05-17"
+      CreatedAt = "2020-05-24"
       ManagedBy = "Terraform"
       Owner     = "Cleber Gasparoto"
-      Service   = "Auto Scaling App with ECS Fargate"
+      Service   = "Auto Scaling App with ECS Fargate - ECR Repository"
     }
   }
 }
