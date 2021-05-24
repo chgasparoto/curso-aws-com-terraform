@@ -1,5 +1,5 @@
 terraform {
-  required_version = "0.15.3"
+  required_version = "0.15.4"
 
   required_providers {
     aws = {
@@ -12,20 +12,21 @@ terraform {
     }
   }
 
-  default_tags {
-    tags = {
-      Project   = "Curso AWS com Terraform"
-      CreatedAt = "2020-05-17"
-      ManagedBy = "Terraform"
-      Owner     = "Cleber Gasparoto"
-      Service   = "Auto Scaling App with ECS EC2"
-    }
-  }
-
   backend "s3" {}
 }
 
 provider "aws" {
   region  = var.aws_region
   profile = var.aws_profile
+
+  //@link: https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider
+  default_tags {
+    tags = {
+      Project   = "Curso AWS com Terraform"
+      CreatedAt = "2020-05-17"
+      ManagedBy = "Terraform"
+      Owner     = "Cleber Gasparoto"
+      Service   = "Auto Scaling App with ECS Fargate"
+    }
+  }
 }
