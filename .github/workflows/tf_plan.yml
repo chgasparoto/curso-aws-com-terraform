@@ -47,6 +47,7 @@ jobs:
         run: terraform plan -no-color
 
   ecs:
+    needs: 'ecr'
     name: 'ECS Fargate'
     runs-on: ubuntu-latest
     env:
