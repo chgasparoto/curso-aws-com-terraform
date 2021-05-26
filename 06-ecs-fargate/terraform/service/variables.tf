@@ -16,66 +16,93 @@ variable "aws_account_id" {
   default     = 968339500772
 }
 
-variable "region" {
-  default = "eu-central-1"
-}
 
 variable "env" {
-  default = "dev"
+  type        = string
+  description = ""
+  default     = "dev"
 }
 
 variable "app_name" {
-  default = "nodejs-app"
+  type        = string
+  description = ""
+  default     = "nodejs-app"
 }
 
 variable "app_folder" {
-  default = "../../app"
+  type        = string
+  description = ""
+  default     = "../../app"
 }
 
 variable "az_count" {
-  default = 2
+  type        = number
+  description = ""
+  default     = 2
 }
 
 variable "ecs_task_execution_role_name" {
-  default = "EcsTaskExecutionRole"
+  type        = string
+  description = ""
+  default     = "EcsTaskExecutionRole"
 }
 
 variable "fargate_cpu" {
-  default = 512
+  type        = number
+  description = ""
+  default     = 512
 }
 
 variable "fargate_memory" {
-  default = 1024
+  type        = number
+  description = ""
+  default     = 1024
 }
 
 variable "app_port" {
-  default = 3000
+  type        = number
+  description = ""
+  default     = 3000
 }
 
 variable "app_count" {
-  default = 2
+  type        = number
+  description = ""
+  default     = 2
 }
 
 variable "health_check_path" {
-  default = "/"
+  type        = string
+  description = ""
+  default     = "/"
 }
 
 variable "ecs_auto_scale_role_name" {
-  default = "EcsAutoScaleRole"
+  type        = string
+  description = ""
+  default     = "EcsAutoScaleRole"
 }
 
 variable "ac_min_capacity" {
-  default = 2
+  type        = number
+  description = ""
+  default     = 2
 }
 
 variable "ac_max_capacity" {
-  default = 5
+  type        = number
+  description = ""
+  default     = 5
 }
 
 variable "cidrblock" {
-  default = "10.1.0.0/16"
+  type        = string
+  description = ""
+  default     = "10.1.0.0/16"
 }
 
 variable "log_retention" {
-  default = 5
+  type        = number
+  description = ""
+  default     = 5
 }

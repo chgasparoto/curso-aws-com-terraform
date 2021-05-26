@@ -4,6 +4,12 @@ variable "aws_region" {
   default     = "eu-central-1"
 }
 
+variable "aws_profile" {
+  type        = string
+  description = ""
+  default     = "default"
+}
+
 variable "aws_account_id" {
   type        = number
   description = ""
@@ -19,5 +25,5 @@ variable "app_name" {
 }
 
 variable "app_folder" {
-  default = "../app"
+  default = "../../app"
 }
