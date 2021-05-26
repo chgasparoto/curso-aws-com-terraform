@@ -11,7 +11,7 @@ resource "aws_ecs_task_definition" "this" {
   memory                   = var.fargate_memory
 
   container_definitions = templatefile("${path.module}/${var.env}/template-container-definition.json", {
-    app_image      = data.terraform_remote_state.ecr.outputs.repository_url
+    app_image      = "${data.terraform_remote_state.ecr.outputs.repository_url}:${data.terraform_remote_state.ecr.outputs.version}"
     app_name       = local.app_name
     container_name = local.container_name
     app_port       = var.app_port

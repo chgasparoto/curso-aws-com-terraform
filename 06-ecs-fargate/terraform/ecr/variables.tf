@@ -17,13 +17,19 @@ variable "aws_account_id" {
 }
 
 variable "env" {
-  default = "dev"
+  type        = string
+  description = ""
+  default     = "dev"
 }
 
 variable "app_name" {
-  default = "nodejs-app"
+  type        = string
+  description = ""
+  default     = "nodejs-app"
 }
 
 variable "app_folder" {
-  default = "../../app"
+  type        = string
+  description = ""
+  default     = "../../app"
 }

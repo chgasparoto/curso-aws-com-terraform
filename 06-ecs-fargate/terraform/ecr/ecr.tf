@@ -4,7 +4,7 @@ resource "aws_ecr_repository" "this" {
 
 resource "null_resource" "docker" {
   triggers = {
-    time = timestamp()
+    time = local.file_hash
   }
 
   provisioner "local-exec" {
@@ -19,11 +19,11 @@ resource "null_resource" "docker" {
 
   provisioner "local-exec" {
     working_dir = var.app_folder
-    command     = "docker tag ${local.app_name}:latest ${aws_ecr_repository.this.repository_url}:latest"
+    command     = "docker tag ${local.app_name} ${aws_ecr_repository.this.repository_url}:${random_id.version.id}"
   }
 
   provisioner "local-exec" {
     working_dir = var.app_folder
-    command     = "docker push ${aws_ecr_repository.this.repository_url}:latest"
+    command     = "docker push ${aws_ecr_repository.this.repository_url}:${random_id.version.id}"
   }
 }

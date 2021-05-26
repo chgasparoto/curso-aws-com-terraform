@@ -18,3 +18,7 @@ output "repository_url" {
   value       = aws_ecr_repository.this.repository_url
 }
 
+output "version" {
+  description = "The ECR image version"
+  value       = random_id.version.id
+}
