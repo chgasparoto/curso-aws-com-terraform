@@ -3,6 +3,8 @@ resource "aws_ecs_cluster" "this" {
 }
 
 resource "aws_ecs_task_definition" "this" {
+  count = length(data.terraform_remote_state.ecr.outputs) ? 1 : 0
+
   family                   = "${local.app_name}-task-definition"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   requires_compatibilities = ["FARGATE"]
@@ -23,6 +25,8 @@ resource "aws_ecs_task_definition" "this" {
 }
 
 resource "aws_ecs_service" "this" {
+  count = length(data.terraform_remote_state.ecr.outputs) ? 1 : 0
+
   name            = "${local.app_name}-service"
   task_definition = aws_ecs_task_definition.this.arn
   cluster         = aws_ecs_cluster.this.id
