@@ -19,7 +19,6 @@ provider "aws" {
   region  = var.aws_region
   profile = var.aws_profile
 
-  //@link: https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider
   default_tags {
     tags = {
       Project   = "Curso AWS com Terraform"

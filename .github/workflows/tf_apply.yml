@@ -7,6 +7,16 @@ on:
       - master
     paths:
       - '06-ecs-fargate/terraform/**'
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: 'AWS profile to run the Terraform with'
+        required: false
+        default: 'default'
+      env:
+        description: 'Environment to apply for'
+        required: false
+        default: 'dev'
 
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
