@@ -3,8 +3,6 @@ resource "aws_ecs_cluster" "this" {
 }
 
 resource "aws_ecs_task_definition" "this" {
-  count = length(data.terraform_remote_state.ecr.outputs) ? 1 : 0
-
   family                   = "${local.app_name}-task-definition"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   requires_compatibilities = ["FARGATE"]
@@ -13,7 +11,7 @@ resource "aws_ecs_task_definition" "this" {
   memory                   = var.fargate_memory
 
   container_definitions = templatefile("${path.module}/${var.env}/template-container-definition.json", {
-    app_image      = "${data.terraform_remote_state.ecr.outputs.repository_url}:${data.terraform_remote_state.ecr.outputs.version}"
+    app_image      = local.app_image
     app_name       = local.app_name
     container_name = local.container_name
     app_port       = var.app_port
@@ -25,8 +23,6 @@ resource "aws_ecs_task_definition" "this" {
 }
 
 resource "aws_ecs_service" "this" {
-  count = length(data.terraform_remote_state.ecr.outputs) ? 1 : 0
-
   name            = "${local.app_name}-service"
   task_definition = aws_ecs_task_definition.this.arn
   cluster         = aws_ecs_cluster.this.id

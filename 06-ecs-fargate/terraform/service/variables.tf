@@ -71,6 +71,12 @@ variable "app_count" {
   default     = 2
 }
 
+variable "app_image" {
+  type        = string
+  description = ""
+  default     = ""
+}
+
 variable "health_check_path" {
   type        = string
   description = ""

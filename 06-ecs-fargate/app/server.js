@@ -5,7 +5,15 @@ const app = express();
 const port = 3000;
 
 app.get('/', (req, res) => res.send('Hello World from Nodejs!'));
-app.get('/healthcheck', (req, res) => res.send('Hello World from Nodejs!'));
+app.get('/healthcheck', (req, res) => {
+    try {
+        res.status(204);
+    } catch (err) {
+        res.status(500);
+    }
+
+    res.send('');
+});
 
 app.get('/cat', (req, res) => {
     axios.get('https://aws.random.cat/meow')
