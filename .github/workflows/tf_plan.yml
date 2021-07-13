@@ -81,7 +81,24 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -no-color
+        run: terraform plan -no-color -out plan.tfplan
+
+      - name: Terraform show
+        id: show
+        run: terraform show -json plan.tfplan
+
+      - name: Save TF Plan JSON
+        run: echo '${{ steps.show.outputs.stdout }}' > plan.json # Do not change
+
+      - name: Run infracost diff
+        uses: infracost/infracost-gh-action@master # Use a specific version instead of master if locking is preferred
+        env:
+          INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          entrypoint: /scripts/ci/diff.sh # Do not change
+          path: plan.json # Do not change
+          usage_file: "${{ env.TF_WORKING_DIR }}/infracost-usage.yml"
 
       - uses: actions/github-script@0.9.0
         if: github.event_name == 'pull_request'
@@ -106,22 +123,3 @@ jobs:
               repo: context.repo.repo,
               body: output
             })
-
-  infracost:
-    needs: 'ecs'
-    runs-on: ubuntu-latest
-    name: Show infracost diff
-    env:
-      TF_WORKING_DIR: '06-ecs-fargate/terraform/service'
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v2
-      - name: Run infracost diff
-        uses: infracost/infracost-gh-action@master
-        env:
-          INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          entrypoint: /scripts/ci/diff.sh # Do not change
-          path: ${{ env.TF_WORKING_DIR }}
-          usage_file: "${{ env.TF_WORKING_DIR }}/infracost-usage.yml"
