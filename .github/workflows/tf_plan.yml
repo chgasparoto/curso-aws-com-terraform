@@ -111,6 +111,8 @@ jobs:
     needs: 'ecs'
     runs-on: ubuntu-latest
     name: Show infracost diff
+    env:
+      TF_WORKING_DIR: '06-ecs-fargate/terraform/service'
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
@@ -121,5 +123,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           entrypoint: /scripts/ci/diff.sh # Do not change
-          path: 06-ecs-fargate/terraform/service
-          usage_file: infracost-usage.yml
+          path: ${{ env.TF_WORKING_DIR }}
+          usage_file: "${{ env.TF_WORKING_DIR }}/infracost-usage.yml"
