@@ -1,0 +1,10 @@
+version: 0.1
+resource_usage:
+  aws_cloudwatch_log_group.this:
+    monthly_data_ingested_gb: 0
+    monthly_data_scanned_gb: 0
+    storage_gb: 0
+  aws_nat_gateway.this[0]:
+    monthly_data_processed_gb: 0
+  aws_nat_gateway.this[1]:
+    monthly_data_processed_gb: 0
