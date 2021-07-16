@@ -62,7 +62,7 @@ variable "fargate_memory" {
 variable "app_port" {
   type        = number
   description = ""
-  default     = 3000
+  default     = 80
 }
 
 variable "app_count" {
