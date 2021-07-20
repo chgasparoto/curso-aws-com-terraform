@@ -9,7 +9,7 @@ resource "null_resource" "docker" {
 
   provisioner "local-exec" {
     working_dir = var.app_folder
-    command     = "$(aws ecr get-login --no-include-email --region ${var.aws_region} --profile ${var.aws_profile})"
+    command     = "$(aws ecr get-login-password --no-include-email --region ${var.aws_region} --profile ${var.aws_profile})"
   }
 
   provisioner "local-exec" {
