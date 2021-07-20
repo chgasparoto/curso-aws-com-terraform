@@ -9,7 +9,14 @@ resource "null_resource" "docker" {
 
   provisioner "local-exec" {
     working_dir = var.app_folder
-    command     = "aws ecr get-login-password --region ${var.aws_region} | docker login --username AWS --password-stdin ${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.aws_region}.amazonaws.com"
+    command     = <<EOT
+      aws ecr get-login-password \
+        --region ${var.aws_region} \
+        ${var.aws_profile == "default" ? "" : "--profile ${var.aws_profile}"} \
+      | docker login \
+        --username AWS \
+        --password-stdin ${var.aws_account_id}.dkr.ecr.${var.aws_region}.amazonaws.com
+    EOT
   }
 
   provisioner "local-exec" {

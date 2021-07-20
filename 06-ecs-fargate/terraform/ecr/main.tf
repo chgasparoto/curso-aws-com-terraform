@@ -37,5 +37,3 @@ resource "random_id" "version" {
 
   byte_length = 8
 }
-
-data "aws_caller_identity" "current" {}
