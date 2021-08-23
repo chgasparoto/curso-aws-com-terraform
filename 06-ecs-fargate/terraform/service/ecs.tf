@@ -32,7 +32,7 @@ resource "aws_ecs_service" "this" {
   network_configuration {
     subnets          = aws_subnet.private.*.id
     security_groups  = [aws_security_group.ecs_tasks.id]
-    assign_public_ip = true
+    assign_public_ip = false
   }
 
   load_balancer {
@@ -42,4 +42,11 @@ resource "aws_ecs_service" "this" {
   }
 
   depends_on = [aws_iam_role_policy_attachment.ecs_task_execution_role, aws_alb_listener.this]
+
+  # we ignore task_definition changes as the revision changes on deploy
+  # of a new version of the application
+  # desired_count is ignored as it can change due to autoscaling policy
+  lifecycle {
+    ignore_changes = [task_definition, desired_count]
+  }
 }

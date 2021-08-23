@@ -2,6 +2,25 @@ resource "aws_ecr_repository" "this" {
   name = "${local.app_name}-repository"
 }
 
+resource "aws_ecr_lifecycle_policy" "main" {
+  repository = aws_ecr_repository.this.name
+
+  policy = jsonencode({
+    rules = [{
+      rulePriority = 1
+      description  = "keep last 10 images"
+      action = {
+        type = "expire"
+      }
+      selection = {
+        tagStatus   = "any"
+        countType   = "imageCountMoreThan"
+        countNumber = 5
+      }
+    }]
+  })
+}
+
 resource "null_resource" "docker" {
   triggers = {
     time = local.file_hash

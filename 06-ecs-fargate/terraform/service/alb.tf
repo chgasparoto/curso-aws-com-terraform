@@ -12,16 +12,17 @@ resource "aws_alb_target_group" "this" {
   target_type = "ip"
 
   health_check {
+    unhealthy_threshold = "2"
     healthy_threshold   = "3"
     interval            = "30"
     protocol            = "HTTP"
-    matcher             = "200"
+    matcher             = "200-210"
     timeout             = "3"
     path                = var.health_check_path
-    unhealthy_threshold = "2"
   }
 }
 
+# Redirect traffic to target group
 resource "aws_alb_listener" "this" {
   load_balancer_arn = aws_alb.this.id
   port              = var.app_port

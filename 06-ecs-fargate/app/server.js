@@ -4,18 +4,26 @@ const axios = require('axios');
 const app = express();
 const port = 80;
 
-app.get('/', (req, res) => res.send('Hello World from Nodejs!'));
+const indexPage = `
+    <h3>Hello from a Node.js Application running on AWS ECS Fargate</h3>
+    <p>What would you like to see?</p>
+    <ul>
+        <li>Random cats? <a href="/cats">Click here</a></li>
+        <li>Random dogs? <a href="/dogs">Click here</a></li>
+        <li>Random foxes? <a href="/foxes">Click here</a></li>
+    </ul>
+`;
+
+app.get('/', (req, res) => res.send(indexPage));
 app.get('/healthcheck', (req, res) => {
     try {
-        res.status(204);
+        res.sendStatus(204);
     } catch (err) {
-        res.status(500);
+        res.sendStatus(500);
     }
-
-    res.send('');
 });
 
-app.get('/cat', (req, res) => {
+app.get('/cats', (req, res) => {
     axios.get('https://aws.random.cat/meow')
         .then(response => {
             console.log(JSON.stringify(response.data));
@@ -24,12 +32,13 @@ app.get('/cat', (req, res) => {
             res.send(`<img src="${catImage}" alt="cat" style="max-width: 500px" />`);
         })
         .catch(error => {
-            console.error(error);
+            console.error(JSON.stringify(error));
+            res.status(500);
             res.send(error.message);
         })
 });
 
-app.get('/dog', (req, res) => {
+app.get('/dogs', (req, res) => {
     axios.get('https://dog.ceo/api/breeds/image/random')
         .then(response => {
             console.log(JSON.stringify(response.data));
@@ -38,12 +47,13 @@ app.get('/dog', (req, res) => {
             res.send(`<img src="${dogImage}" alt="cat" style="max-width: 500px" />`);
         })
         .catch(error => {
-            console.error(error);
+            console.error(JSON.stringify(error));
+            res.status(500);
             res.send(error.message);
         })
 });
 
-app.get('/fox', (req, res) => {
+app.get('/foxes', (req, res) => {
     axios.get('https://randomfox.ca/floof/')
         .then(response => {
             console.log(JSON.stringify(response.data));
@@ -52,7 +62,8 @@ app.get('/fox', (req, res) => {
             res.send(`<img src="${foxImage}" alt="cat" style="max-width: 500px" />`);
         })
         .catch(error => {
-            console.error(error);
+            console.error(JSON.stringify(error));
+            res.status(500);
             res.send(error.message);
         })
 });

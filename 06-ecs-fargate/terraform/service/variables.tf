@@ -80,7 +80,7 @@ variable "app_image" {
 variable "health_check_path" {
   type        = string
   description = ""
-  default     = "/"
+  default     = "/healthcheck"
 }
 
 variable "ecs_auto_scale_role_name" {
@@ -89,13 +89,13 @@ variable "ecs_auto_scale_role_name" {
   default     = "EcsAutoScaleRole"
 }
 
-variable "ac_min_capacity" {
+variable "as_min_capacity" {
   type        = number
   description = ""
   default     = 2
 }
 
-variable "ac_max_capacity" {
+variable "as_max_capacity" {
   type        = number
   description = ""
   default     = 5

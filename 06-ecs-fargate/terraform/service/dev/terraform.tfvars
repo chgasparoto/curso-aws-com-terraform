@@ -1,8 +1,7 @@
-region          = "eu-central-1"
+aws_region      = "eu-central-1"
 env             = "dev"
-app_port        = 3000
-app_count       = 2
-fargate_cpu     = 512
-fargate_memory  = 1024
-ac_min_capacity = 2
-ac_max_capacity = 5
+app_count       = 1
+fargate_cpu     = 256
+fargate_memory  = 512
+as_min_capacity = 1
+as_max_capacity = 3

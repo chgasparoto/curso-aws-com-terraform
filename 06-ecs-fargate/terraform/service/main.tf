@@ -1,10 +1,10 @@
 terraform {
-  required_version = "1.0.2"
+  required_version = "1.0.5"
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "3.47.0"
+      version = "3.55.0"
     }
     random = {
       source  = "hashicorp/random"
@@ -23,7 +23,7 @@ provider "aws" {
   default_tags {
     tags = {
       Project   = "Curso AWS com Terraform"
-      CreatedAt = "2020-05-17"
+      CreatedAt = "2020-08-22"
       ManagedBy = "Terraform"
       Owner     = "Cleber Gasparoto"
       Service   = "Auto Scaling App with ECS Fargate"
