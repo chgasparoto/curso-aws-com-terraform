@@ -41,7 +41,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 1.0.2
+          terraform_version: 1.0.5
 
       - name: Terraform Init
         run: terraform init -backend=true -backend-config="backend.hcl"
@@ -74,7 +74,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 1.0.2
+          terraform_version: 1.0.5
 
       - name: Terraform Init
         run: terraform init -backend=true -backend-config="backend.hcl"
