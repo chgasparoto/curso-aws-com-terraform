@@ -1,33 +1,35 @@
 variable "environment" {
   type        = string
-  description = ""
+  description = "The environment to deploy to"
 }
 
 variable "aws_region" {
   type        = string
-  description = ""
+  description = "The region to deploy to"
 }
 
 variable "aws_profile" {
   type        = string
-  description = ""
+  description = "The profile to use to get access for Terraform"
 }
 
 variable "instance_ami" {
   type        = string
-  description = ""
+  description = "The AMI the instance will use. E.g.: Ubuntu, Windows, etc"
 }
 
 variable "instance_type" {
   type        = string
-  description = ""
+  description = "The power of the instance to use"
 }
 
 variable "instance_tags" {
   type        = map(string)
-  description = ""
+  description = "The tags to identify the instances created by Terraform"
   default = {
     Name    = "Ubuntu"
     Project = "Curso AWS com Terraform"
   }
 }
+
+# TODO: adicionar validation, sensitive flag

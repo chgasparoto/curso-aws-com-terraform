@@ -7,7 +7,7 @@ variable "aws_region" {
 variable "aws_profile" {
   type        = string
   description = ""
-  default     = "tf014"
+  default     = "macbookpro_second_personal_account"
 }
 
 variable "domain" {

@@ -6,7 +6,7 @@ resource "aws_s3_bucket" "this" {
   bucket = "my-bucket-${random_pet.this.id}"
 }
 
-resource "aws_s3_bucket_object" "this" {
+resource "aws_s3_object" "this" {
   bucket       = aws_s3_bucket.this.bucket
   key          = "instances/instances-${local.instance.ami}.json"
   source       = "outputs.json"

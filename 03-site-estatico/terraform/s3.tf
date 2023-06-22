@@ -7,7 +7,9 @@ data "template_file" "s3-public-policy" {
 }
 
 module "logs" {
-  source        = "github.com/chgasparoto/terraform-s3-object-notification"
+  source  = "github.com/chgasparoto/terraform-s3-object-notification"
+  version = ">= 2.0.0"
+
   name          = "${local.domain}-logs"
   acl           = "log-delivery-write"
   force_destroy = !local.has_domain
@@ -15,7 +17,9 @@ module "logs" {
 }
 
 module "website" {
-  source        = "github.com/chgasparoto/terraform-s3-object-notification"
+  source  = "github.com/chgasparoto/terraform-s3-object-notification"
+  version = ">= 2.0.0"
+
   name          = local.domain
   acl           = "public-read"
   policy        = data.template_file.s3-public-policy.rendered
@@ -26,7 +30,7 @@ module "website" {
     enabled = true
   }
 
-  filepath = "${local.website_filepath}/build"
+  filepath = "${local.website_filepath}/dist"
   website = {
     index_document = "index.html"
     error_document = "index.html"
@@ -39,7 +43,9 @@ module "website" {
 }
 
 module "redirect" {
-  source        = "github.com/chgasparoto/terraform-s3-object-notification"
+  source  = "github.com/chgasparoto/terraform-s3-object-notification"
+  version = ">= 2.0.0"
+
   name          = "www.${local.domain}"
   acl           = "public-read"
   force_destroy = !local.has_domain

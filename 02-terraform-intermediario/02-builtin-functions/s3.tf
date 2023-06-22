@@ -7,7 +7,7 @@ resource "aws_s3_bucket" "this" {
   tags   = local.common_tags
 }
 
-resource "aws_s3_bucket_object" "this" {
+resource "aws_s3_object" "this" {
   bucket       = aws_s3_bucket.this.bucket
   key          = "${uuid()}.${local.file_ext}"
   source       = data.archive_file.json.output_path

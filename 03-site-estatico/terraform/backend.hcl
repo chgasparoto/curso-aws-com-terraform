@@ -1,5 +1,5 @@
 bucket         = "tfstate-968339500772"
 key            = "03-static-website/terraform.tfstate"
 region         = "eu-central-1"
-profile        = "tf014"
+profile        = "macbookpro_second_personal_account"
 dynamodb_table = "tflock-tfstate-968339500772"

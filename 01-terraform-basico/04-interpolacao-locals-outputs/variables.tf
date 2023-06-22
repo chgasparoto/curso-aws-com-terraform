@@ -1,17 +1,17 @@
+variable "environment" {
+  type        = string
+  description = "The environment to deploy to"
+  default     = "dev"
+}
+
 variable "aws_region" {
   type        = string
-  description = ""
+  description = "The region to deploy to"
   default     = "eu-central-1"
 }
 
 variable "aws_profile" {
   type        = string
-  description = ""
-  default     = "tf014"
-}
-
-variable "environment" {
-  type        = string
-  description = ""
-  default     = "dev"
+  description = "The profile to use to get access for Terraform"
+  default     = "macbookpro_second_personal_account"
 }

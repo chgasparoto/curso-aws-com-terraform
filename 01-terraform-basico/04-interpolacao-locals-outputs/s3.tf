@@ -13,7 +13,7 @@ resource "aws_s3_bucket" "manual" {
   }
 }
 
-resource "aws_s3_bucket_object" "this" {
+resource "aws_s3_object" "this" {
   bucket       = aws_s3_bucket.this.bucket
   key          = "config/${local.ip_filepath}"
   source       = local.ip_filepath
@@ -23,7 +23,7 @@ resource "aws_s3_bucket_object" "this" {
   tags = local.common_tags
 }
 
-resource "aws_s3_bucket_object" "random" {
+resource "aws_s3_object" "random" {
   bucket       = aws_s3_bucket.this.bucket
   key          = "config/${random_pet.bucket.id}.json"
   source       = local.ip_filepath
