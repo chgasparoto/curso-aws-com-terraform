@@ -12,7 +12,7 @@ terraform {
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs
 provider "aws" {
   region  = "eu-central-1" # Brasil -> us-east-1
-  profile = "macbookpro_second_personal_account"
+  profile = "custom_profile"
 }
 
 # terraform validate

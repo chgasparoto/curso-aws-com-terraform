@@ -18,9 +18,9 @@ resource "null_resource" "null" {
     command = "echo $FOO $BAR $BAZ $TIME >> env_vars.txt"
 
     environment = {
-      FOO = "bar"
-      BAR = 1
-      BAZ = "true"
+      FOO  = "bar"
+      BAR  = 1
+      BAZ  = "true"
       TIME = timestamp()
     }
   }
