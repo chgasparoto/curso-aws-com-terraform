@@ -6,6 +6,6 @@ locals {
 
   common_tags = {
     "Owner" = "Cleber Gasparoto"
-    "Year"  = "2021"
+    "Year"  = "2023"
   }
 }

@@ -4,11 +4,11 @@ resource "aws_s3_bucket" "this" {
 }
 
 resource "aws_s3_bucket" "manual" {
-  bucket = "meubucketcriadonoconsoledaaws123123"
+  bucket = "meubucketcriadonoconsoledaaws123123-cleber"
 
   tags = {
-    Criado    = "14/01/2021"
-    Importado = "23/01/2021"
+    Criado    = "06/09/2023"
+    Importado = "06/09/2023"
     ManagedBy = "Terraform"
   }
 }

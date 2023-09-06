@@ -20,7 +20,7 @@ provider "aws" {
 # terraform destroy
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket#private-bucket-w-tags
 resource "aws_s3_bucket" "my_bucket" {
-  bucket = "my-tf-test-bucket-123123455745642342342"
+  bucket = "my-tf-test-bucket-123123455745642342342-cleber"
 
   tags = {
     Name        = "My first Terraform bucket"

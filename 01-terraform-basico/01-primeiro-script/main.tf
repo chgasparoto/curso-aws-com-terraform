@@ -16,5 +16,5 @@ provider "aws" {
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket
 resource "aws_s3_bucket" "my_bucket" {
-  bucket = "my-tf-test-bucket-123123455745642342342-fkjhadfuqewqkhadsf"
+  bucket = "my-tf-test-bucket-123123455745642342342-cleber"
 }
