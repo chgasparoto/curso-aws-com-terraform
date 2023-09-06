@@ -4,12 +4,6 @@ variable "aws_region" {
   default     = "eu-central-1"
 }
 
-variable "aws_profile" {
-  type        = string
-  description = ""
-  default     = ""
-}
-
 variable "ami" {
   type        = string
   description = ""

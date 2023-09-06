@@ -1,18 +1,17 @@
 terraform {
-  required_version = ">= 1.0.0"
+  required_version = "~> 1.5"
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 4.0.0"
+      version = "~> 5.15"
     }
   }
 }
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs
 provider "aws" {
-  region  = "eu-central-1" # Brasil -> us-east-1
-  profile = "custom_profile"
+  region = "eu-central-1" # Brasil -> us-east-1
 }
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket#private-bucket-w-tags

@@ -1,10 +1,10 @@
 terraform {
-  required_version = ">= 1.0.0"
+  required_version = "~> 1.5"
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 4.0.0"
+      version = "~> 5.15"
     }
   }
 
@@ -12,14 +12,12 @@ terraform {
     bucket         = "tfstate-968339500772"
     key            = "05-workspaces/terraform.tfstate"
     region         = "eu-central-1"
-    profile        = "tf014"
     dynamodb_table = "tflock-tfstate-968339500772"
   }
 }
 
 provider "aws" {
-  region  = lookup(var.aws_region, local.env)
-  profile = "tf014"
+  region = lookup(var.aws_region, local.env)
 }
 
 locals {

@@ -1,17 +1,16 @@
 terraform {
-  required_version = ">= 1.0.0"
+  required_version = "~> 1.5"
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 4.0.0"
+      version = "~> 5.15"
     }
   }
 }
 
 provider "aws" {
-  region  = "eu-central-1"
-  profile = "tf014"
+  region = "eu-central-1"
 }
 
 resource "random_pet" "this" {
