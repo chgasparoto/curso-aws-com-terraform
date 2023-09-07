@@ -9,10 +9,10 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "tfstate-968339500772"
+    bucket         = "tfstate-2023-968339500772"
     key            = "05-workspaces/terraform.tfstate"
     region         = "eu-central-1"
-    dynamodb_table = "tflock-tfstate-968339500772"
+    dynamodb_table = "tflock-2023-tfstate-2023-968339500772"
   }
 }
 

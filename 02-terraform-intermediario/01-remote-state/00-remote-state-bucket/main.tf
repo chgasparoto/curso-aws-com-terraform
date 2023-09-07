@@ -11,18 +11,24 @@ terraform {
 
 provider "aws" {
   region = "eu-central-1"
+
+  default_tags {
+    tags = {
+      Project   = "Curso AWS com Terraform"
+      ManagedBy = "Terraform"
+      Owner     = "Cleber Gasparoto"
+      CreatedAt = "2023-09-06"
+    }
+  }
 }
 
 data "aws_caller_identity" "current" {}
 
 resource "aws_s3_bucket" "remote_state" {
-  bucket = "tfstate-${data.aws_caller_identity.current.account_id}"
+  bucket = "tfstate-2023-${data.aws_caller_identity.current.account_id}"
 
   tags = {
     Description = "Stores terraform remote state files"
-    ManagedBy   = "Terraform"
-    Owner       = "Cleber Gasparoto"
-    CreatedAt   = "2023-09-06"
   }
 }
 
@@ -35,10 +41,9 @@ resource "aws_s3_bucket_versioning" "remote_state" {
 }
 
 resource "aws_dynamodb_table" "lock_table" {
-  name           = "tflock-${aws_s3_bucket.remote_state.bucket}"
-  read_capacity  = 5
-  write_capacity = 5
-  hash_key       = "LockID"
+  name         = "tflock-2023-${aws_s3_bucket.remote_state.bucket}"
+  hash_key     = "LockID"
+  billing_mode = "PAY_PER_REQUEST"
 
   attribute {
     name = "LockID"

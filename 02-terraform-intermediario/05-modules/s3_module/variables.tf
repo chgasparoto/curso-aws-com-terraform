@@ -1,34 +1,65 @@
 variable "name" {
+  description = "Bucket unique name. It can contain only numbers, letters and dashes"
   type        = string
-  description = "Bucket name"
+}
+
+variable "ownership" {
+  description = "Object ownership. Valid values: BucketOwnerPreferred, ObjectWriter or BucketOwnerEnforced"
+  type        = string
+  default     = "BucketOwnerPreferred"
 }
 
 variable "acl" {
+  description = "Access Control Lists. It defines which AWS accounts or groups are granted access and the type of access"
   type        = string
-  description = ""
   default     = "private"
 }
 
 variable "policy" {
+  description = "Bucket policy"
   type        = string
-  description = ""
-  default     = null
+  default     = ""
+}
+
+variable "force_destroy" {
+  description = "Whether or not to force destroy the bucket"
+  type        = bool
+  default     = false
 }
 
 variable "tags" {
+  description = "Bucket tags"
   type        = map(string)
-  description = ""
   default     = {}
 }
 
 variable "key_prefix" {
-  type    = string
-  default = ""
+  description = "Prefix to put your key(s) inside the bucket. E.g.: logs -> all files will be uploaded under logs/"
+  type        = string
+  default     = ""
 }
 
-variable "files" {
-  type    = string
-  default = ""
+variable "filepath" {
+  description = "The local path where the desired files will be uploaded to the bucket"
+  type        = string
+  default     = ""
+}
+
+variable "versioning" {
+  description = "Map containing versioning configuration."
+  type = object({
+    expected_bucket_owner = optional(string)
+    status                = optional(string)
+    mfa                   = optional(string)
+    mfa_delete            = optional(string)
+  })
+
+  default = {}
+
+  validation {
+    condition     = var.versioning.status != null ? contains(["Enabled", "Suspended", "Disabled"], var.versioning.status) : true
+    error_message = "Allowed values for versioning.status are \"Enabled\", \"Suspended\", \"Disabled\"."
+  }
 }
 
 variable "website" {
@@ -37,8 +68,8 @@ variable "website" {
   default     = {}
 }
 
-variable "versioning" {
-  description = "Map containing versioning configuration."
+variable "logging" {
+  description = "Map containing logging configuration."
   type        = map(string)
   default     = {}
 }

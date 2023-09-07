@@ -33,9 +33,9 @@ resource "random_pet" "website" {
 module "website" {
   source = "./s3_module"
 
-  name  = random_pet.website.id
-  acl   = "public-read"
-  files = "${path.root}/website"
+  name     = random_pet.website.id
+  acl      = "public-read"
+  filepath = "${path.root}/website"
 
   website = {
     index_document = "index.html"
