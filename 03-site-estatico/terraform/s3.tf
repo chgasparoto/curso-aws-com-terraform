@@ -1,14 +1,5 @@
-data "template_file" "s3-public-policy" {
-  template = file("policy.json")
-  vars = {
-    bucket_name = local.domain
-    cdn_oai     = aws_cloudfront_origin_access_identity.this.id
-  }
-}
-
 module "logs" {
-  source  = "github.com/chgasparoto/terraform-s3-object-notification"
-  version = ">= 2.0.0"
+  source = "github.com/chgasparoto/terraform-s3-object-notification?ref=v2.0.1"
 
   name          = "${local.domain}-logs"
   acl           = "log-delivery-write"
@@ -17,12 +8,11 @@ module "logs" {
 }
 
 module "website" {
-  source  = "github.com/chgasparoto/terraform-s3-object-notification"
-  version = ">= 2.0.0"
+  source = "github.com/chgasparoto/terraform-s3-object-notification?ref=v2.0.1"
 
   name          = local.domain
   acl           = "public-read"
-  policy        = data.template_file.s3-public-policy.rendered
+  policy        = local.bucket_policy
   force_destroy = !local.has_domain
   tags          = local.common_tags
 
@@ -43,8 +33,7 @@ module "website" {
 }
 
 module "redirect" {
-  source  = "github.com/chgasparoto/terraform-s3-object-notification"
-  version = ">= 2.0.0"
+  source = "github.com/chgasparoto/terraform-s3-object-notification?ref=v2.0.1"
 
   name          = "www.${local.domain}"
   acl           = "public-read"
