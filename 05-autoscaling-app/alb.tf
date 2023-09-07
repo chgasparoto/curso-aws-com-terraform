@@ -1,9 +1,13 @@
 resource "aws_lb" "this" {
-  name            = "Terraform-ALB"
-  security_groups = [aws_security_group.alb.id]
-  subnets         = [aws_subnet.this["pub_a"].id, aws_subnet.this["pub_b"].id]
+  name               = "Terraform-ALB"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.alb.id]
+  subnets            = [aws_subnet.this["pub_a"].id, aws_subnet.this["pub_b"].id]
 
-  tags = merge(local.common_tags, { Name = "Terraform ALB" })
+  tags = {
+    Name = "Terraform ALB"
+  }
 }
 
 resource "aws_lb_target_group" "this" {

@@ -1,11 +1,15 @@
 resource "aws_vpc" "this" {
   cidr_block = "192.168.0.0/16"
-  tags       = merge(local.common_tags, { Name = "Terraform VPC " })
+  tags = {
+    Name = "Terraform VPC "
+  }
 }
 
 resource "aws_internet_gateway" "this" {
   vpc_id = aws_vpc.this.id
-  tags   = merge(local.common_tags, { Name = "Terraform IGW " })
+  tags = {
+    Name = "Terraform IGW "
+  }
 }
 
 resource "aws_subnet" "this" {
@@ -20,7 +24,9 @@ resource "aws_subnet" "this" {
   cidr_block        = each.value[0]
   availability_zone = each.value[1]
 
-  tags = merge(local.common_tags, { Name = each.value[2] })
+  tags = {
+    Name = each.value[2]
+  }
 }
 
 resource "aws_route_table" "public" {
@@ -31,12 +37,16 @@ resource "aws_route_table" "public" {
     gateway_id = aws_internet_gateway.this.id
   }
 
-  tags = merge(local.common_tags, { Name = "Terraform Public" })
+  tags = {
+    Name = "Terraform Public"
+  }
 }
 
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.this.id
-  tags   = merge(local.common_tags, { Name = "Terraform Private" })
+  tags = {
+    Name = "Terraform Private"
+  }
 }
 
 resource "aws_route_table_association" "this" {

@@ -31,7 +31,9 @@ resource "aws_security_group" "web" {
     cidr_blocks = [aws_subnet.this["pvt_a"].cidr_block]
   }
 
-  tags = merge(local.common_tags, { Name = "Web Server" })
+  tags = {
+    Name = "Web Server"
+  }
 }
 
 resource "aws_security_group" "db" {
@@ -74,7 +76,9 @@ resource "aws_security_group" "db" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = merge(local.common_tags, { Name = "Database MySQL" })
+  tags = {
+    Name = "Database MySQL"
+  }
 }
 
 resource "aws_security_group" "alb" {
@@ -96,7 +100,9 @@ resource "aws_security_group" "alb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = merge(local.common_tags, { Name = "Load Balancer" })
+  tags = {
+    Name = "Load Balancer"
+  }
 }
 
 resource "aws_security_group" "autoscaling" {
@@ -125,7 +131,9 @@ resource "aws_security_group" "autoscaling" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = merge(local.common_tags, { Name = "Auto Scaling" })
+  tags = {
+    Name = "Auto Scaling"
+  }
 }
 
 resource "aws_security_group" "jenkins" {
@@ -154,5 +162,7 @@ resource "aws_security_group" "jenkins" {
     security_groups = [aws_security_group.web.id]
   }
 
-  tags = merge(local.common_tags, { Name = "Jenkins Machine" })
+  tags = {
+    Name = "Jenkins Machine"
+  }
 }

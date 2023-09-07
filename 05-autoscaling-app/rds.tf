@@ -2,7 +2,9 @@ resource "aws_db_subnet_group" "default" {
   name       = "main"
   subnet_ids = [aws_subnet.this["pvt_a"].id, aws_subnet.this["pvt_b"].id]
 
-  tags = merge(local.common_tags, { Name = "DB subnet group" })
+  tags = {
+    Name = "DB subnet group"
+  }
 }
 
 resource "aws_db_instance" "web" {
@@ -11,7 +13,7 @@ resource "aws_db_instance" "web" {
   engine               = "mysql"
   engine_version       = "5.7"
   instance_class       = "db.t2.micro"
-  name                 = "mydb"
+  db_name              = "mydb"
   username             = "foo"
   password             = "foobarbaz"
   parameter_group_name = "default.mysql5.7"

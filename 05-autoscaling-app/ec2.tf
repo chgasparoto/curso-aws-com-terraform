@@ -69,5 +69,7 @@ resource "aws_instance" "jenkins" {
   subnet_id              = aws_subnet.this["pvt_b"].id
   availability_zone      = "${var.aws_region}b"
 
-  tags = merge(local.common_tags, { Name = "Jenkins Machine" })
+  tags = {
+    Name = "Jenkins Machine"
+  }
 }
