@@ -41,7 +41,7 @@ resource "aws_s3_bucket_versioning" "remote_state" {
 }
 
 resource "aws_dynamodb_table" "lock_table" {
-  name         = "tflock-2023-${aws_s3_bucket.remote_state.bucket}"
+  name         = "tflock-${aws_s3_bucket.remote_state.bucket}"
   hash_key     = "LockID"
   billing_mode = "PAY_PER_REQUEST"
 

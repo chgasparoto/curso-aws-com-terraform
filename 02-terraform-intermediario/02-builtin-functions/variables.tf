@@ -1,14 +1,17 @@
-variable "env" {}
+variable "environment" {
+  type        = string
+  description = "The environment to deploy to"
+}
 
 variable "aws_region" {
   type        = string
-  description = ""
+  description = "The region to deploy to"
   default     = "eu-central-1"
 }
 
 variable "instance_ami" {
   type        = string
-  description = ""
+  description = "The AMI the instance will use. E.g.: Ubuntu, Windows, etc"
   default     = "ami-0233214e13e500f77"
 
   validation {
@@ -34,7 +37,7 @@ variable "instance_type" {
     dev  = string
     prod = string
   })
-  description = ""
+  description = "Instance computing power"
   default = {
     dev  = "t3.micro"
     prod = "t3.medium"

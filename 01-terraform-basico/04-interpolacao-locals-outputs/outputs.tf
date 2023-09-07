@@ -4,7 +4,7 @@ output "bucket_name" {
 
 output "bucket_arn" {
   value       = aws_s3_bucket.this.arn
-  description = ""
+  description = "The bucket ARN (AWS Resouce Name)"
 }
 
 output "bucket_domain_name" {
@@ -14,5 +14,3 @@ output "bucket_domain_name" {
 output "ips_file_path" {
   value = "${aws_s3_bucket.this.bucket}/${aws_s3_object.this.key}"
 }
-
-# TODO: adicionar senstive flag para os outputs

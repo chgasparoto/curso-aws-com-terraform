@@ -20,7 +20,7 @@ variable "instance_ami" {
 
 variable "instance_type" {
   type        = string
-  description = "The power of the instance to use"
+  description = "Instance computing power"
 }
 
 variable "instance_tags" {
@@ -31,5 +31,3 @@ variable "instance_tags" {
     Project = "Curso AWS com Terraform"
   }
 }
-
-# TODO: adicionar validation, sensitive flag
