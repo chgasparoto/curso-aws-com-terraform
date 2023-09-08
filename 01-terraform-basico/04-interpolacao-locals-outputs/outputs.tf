@@ -4,7 +4,7 @@ output "bucket_name" {
 
 output "bucket_arn" {
   value       = aws_s3_bucket.this.arn
-  description = "The bucket ARN (AWS Resouce Name)"
+  description = "The bucket ARN (AWS Resource Name)"
 }
 
 output "bucket_domain_name" {
