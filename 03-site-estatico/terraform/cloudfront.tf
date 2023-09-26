@@ -62,6 +62,4 @@ resource "aws_cloudfront_distribution" "this" {
       ssl_support_method  = "sni-only"
     }
   }
-
-  tags = local.common_tags
 }
