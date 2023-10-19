@@ -17,7 +17,7 @@ npm ci
 npm run build
 echo "----------------------------------------"
 cd ../terraform || return
-echo "Formatting terraform files"
+echo "Formatting terraform files recursively"
 echo "terraform fmt -recursive"
 terraform fmt -recursive
 echo "----------------------------------------"

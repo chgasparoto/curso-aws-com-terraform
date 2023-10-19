@@ -1,13 +1,4 @@
-terraform {
-  required_version = "~> 1.6"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.15"
-    }
-  }
-}
+# https://developer.hashicorp.com/terraform/language/values/locals
 
 provider "aws" {
   region  = var.aws_region

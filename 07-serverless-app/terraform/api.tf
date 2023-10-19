@@ -1,5 +1,5 @@
 resource "aws_api_gateway_rest_api" "this" {
-  name = var.service_name
+  name = local.namespaced_service_name
 }
 
 resource "aws_api_gateway_resource" "v1" {
@@ -35,7 +35,7 @@ resource "aws_api_gateway_integration" "this" {
   http_method             = aws_api_gateway_method.any.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.dynamo.invoke_arn
+  uri                     = module.lambda_dynamodb.invoke_arn
 }
 
 resource "aws_api_gateway_deployment" "this" {

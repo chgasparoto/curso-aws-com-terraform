@@ -1,22 +1,6 @@
-terraform {
-  required_version = "~> 1.6"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.15"
-    }
-    random = {
-      source  = "hashicorp/random"
-      version = "~> 3.1"
-    }
-  }
-
-  backend "s3" {}
-}
-
 provider "aws" {
-  region = var.aws_region
+  region  = var.aws_region
+  profile = "tf_mac_air_m1_ggasparoto"
 
   default_tags {
     tags = local.common_tags
@@ -24,8 +8,10 @@ provider "aws" {
 }
 
 provider "aws" {
-  region = "us-east-1"
-  alias  = "us-east-1"
+  region  = "us-east-1"
+  profile = "tf_mac_air_m1_ggasparoto"
+
+  alias = "us_east_1"
 
   default_tags {
     tags = local.common_tags

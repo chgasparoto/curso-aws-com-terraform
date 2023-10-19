@@ -1,3 +1,5 @@
+# https://developer.hashicorp.com/terraform/language/values/variables
+
 terraform {
   required_version = "~> 1.6"
 

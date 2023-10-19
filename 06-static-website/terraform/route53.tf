@@ -33,7 +33,7 @@ resource "aws_route53_record" "www" {
 }
 
 resource "aws_route53_record" "cert_validation" {
-  provider = aws.us-east-1
+  provider = aws.us_east_1
 
   for_each = local.has_domain ? {
     for dvo in aws_acm_certificate.this[0].domain_validation_options : dvo.domain_name => {

@@ -7,13 +7,19 @@ variable "aws_region" {
 variable "aws_account_id" {
   type        = string
   description = "The AWS account id to unique identify resources"
-  default     = "968339500772"
+  default     = "871055234888"
+}
+
+variable "environment" {
+  type        = string
+  description = "The enviroment to deploy to"
+  default     = "dev"
 }
 
 variable "service_name" {
   type        = string
   description = "The service name identifier"
-  default     = "Todos"
+  default     = "curso-terraform"
 }
 
 variable "service_domain" {

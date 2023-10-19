@@ -1,94 +1,125 @@
-resource "null_resource" "build_lambda_layers" {
+# --------------- LAMBDA CODE --------------------
+resource "null_resource" "build" {
   triggers = {
-    layer_build = filemd5("${local.layers_path}/package.json")
+    code_hash = local.code_hash
   }
 
   provisioner "local-exec" {
-    working_dir = local.layers_path
-    command     = "npm install --production && cd ../ && zip -9 -r --quiet ${local.layer_name} *"
+    working_dir = "${path.module}/../"
+    command     = "npm run build"
   }
 }
 
-resource "aws_lambda_layer_version" "joi" {
-  layer_name          = "joi-layer"
-  description         = "joi: 17.3.0"
-  filename            = "${local.layers_path}/../${local.layer_name}"
-  compatible_runtimes = ["nodejs14.x"]
-
-  depends_on = [null_resource.build_lambda_layers]
+resource "random_uuid" "this" {
+  keepers = {
+    code_hash = local.code_hash
+  }
 }
 
-data "archive_file" "s3" {
+data "archive_file" "codebase" {
+  depends_on = [
+    null_resource.build
+  ]
+
   type        = "zip"
-  source_file = "${local.lambdas_path}/s3/index.js"
-  output_path = "files/s3-artefact.zip"
+  source_dir  = "${path.module}/../dist"
+  output_path = "files/${random_uuid.this.result}.zip"
 }
 
-resource "aws_lambda_function" "s3" {
-  function_name = "s3"
-  handler       = "index.handler"
-  role          = aws_iam_role.s3.arn
-  runtime       = "nodejs14.x"
+# --------------- LAMBDA INFRA --------------------
 
-  filename         = data.archive_file.s3.output_path
-  source_code_hash = data.archive_file.s3.output_base64sha256
+module "lambda_s3" {
+  source = "./modules/lambda"
 
-  layers = [aws_lambda_layer_version.joi.arn]
+  name            = "${local.namespaced_service_name}-s3"
+  description     = "Reads file from S3 and publishes messages into a SNS topic"
+  iam_role_arn    = module.iam_role_s3_lambda.iam_role_arn
+  handler         = "${local.lambdas_path}/s3/index.handler"
+  timeout_in_secs = 15
+  code_hash       = data.archive_file.codebase.output_base64sha256
 
-  environment {
-    variables = {
-      TOPIC_ARN = aws_sns_topic.this.arn
-    }
+  s3_config = {
+    bucket = aws_s3_bucket.lambda_artefacts.bucket
+    key    = aws_s3_object.lambda_artefacts.key
   }
 
-  tags = local.common_tags
+  env_vars = {
+    TOPIC_ARN = aws_sns_topic.this.arn
+    DEBUG     = var.environment == "dev"
+  }
 }
+
+module "lambda_dynamodb" {
+  source = "./modules/lambda"
+
+  name            = "${local.namespaced_service_name}-dynamodb"
+  description     = "Triggered by API Gateway to save data into DynamoDB table"
+  handler         = "${local.lambdas_path}/dynamodb/index.handler"
+  iam_role_arn    = module.iam_role_dynamodb_lambda.iam_role_arn
+  timeout_in_secs = 15
+  memory_in_mb    = 256
+  code_hash       = data.archive_file.codebase.output_base64sha256
+
+  s3_config = {
+    bucket = aws_s3_bucket.lambda_artefacts.bucket
+    key    = aws_s3_object.lambda_artefacts.key
+  }
+
+  env_vars = {
+    JWT_SECRET = aws_cognito_user_pool_client.this.id
+    TABLE_NAME = aws_dynamodb_table.this.name
+    GSI_NAME   = local.dynamodb_config.gsi_name
+    DEBUG      = var.environment == "dev"
+
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED = 1
+  }
+}
+
+module "lambda_sqs" {
+  source = "./modules/lambda"
+
+  name            = "${local.namespaced_service_name}-sqs"
+  description     = "Triggered by SQS to forward data to API Gateway"
+  handler         = "${local.lambdas_path}/sqs/index.handler"
+  iam_role_arn    = module.iam_role_sqs_lambda.iam_role_arn
+  timeout_in_secs = 15
+  memory_in_mb    = 256
+  code_hash       = data.archive_file.codebase.output_base64sha256
+
+  s3_config = {
+    bucket = aws_s3_bucket.lambda_artefacts.bucket
+    key    = aws_s3_object.lambda_artefacts.key
+  }
+
+  env_vars = {
+    JWT_SECRET = aws_cognito_user_pool_client.this.id
+    TABLE_NAME = aws_dynamodb_table.this.name
+    GSI_NAME   = local.dynamodb_config.gsi_name
+    DEBUG      = var.environment == "dev"
+
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED = 1
+  }
+}
+
+# --------------- LAMBDA TRIGGERS --------------------
 
 resource "aws_lambda_permission" "s3" {
   statement_id  = "AllowExecutionFromS3Bucket"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.s3.arn
+  function_name = module.lambda_s3.arn
   principal     = "s3.amazonaws.com"
   source_arn    = aws_s3_bucket.todo.arn
-}
-
-data "archive_file" "dynamo" {
-  type        = "zip"
-  source_file = "${local.lambdas_path}/dynamo/index.js"
-  output_path = "files/dynamo-artefact.zip"
-}
-
-resource "aws_lambda_function" "dynamo" {
-  function_name = "dynamo"
-  handler       = "index.handler"
-  role          = aws_iam_role.dynamo.arn
-  runtime       = "nodejs14.x"
-
-  filename         = data.archive_file.dynamo.output_path
-  source_code_hash = data.archive_file.dynamo.output_base64sha256
-
-  timeout     = 30
-  memory_size = 128
-
-  environment {
-    variables = {
-      TABLE = aws_dynamodb_table.this.name
-    }
-  }
 }
 
 resource "aws_lambda_permission" "dynamo" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.dynamo.arn
+  function_name = module.lambda_dynamodb.name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "arn:aws:execute-api:${var.aws_region}:${var.aws_account_id}:*/*"
 }
 
-resource "aws_lambda_permission" "sns" {
-  statement_id  = "AllowExecutionFromSNS"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.dynamo.function_name
-  principal     = "sns.amazonaws.com"
-  source_arn    = aws_sns_topic.this.arn
+resource "aws_lambda_event_source_mapping" "lambda_sqs" {
+  event_source_arn = aws_sqs_queue.this.arn
+  function_name    = module.lambda_sqs.name
 }

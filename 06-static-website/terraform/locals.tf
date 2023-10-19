@@ -24,9 +24,11 @@ locals {
   }
 
   common_tags = {
-    Project   = "Curso AWS com Terraform"
-    Service   = "Static Website"
-    CreatedAt = "2020-03-14"
-    Module    = "3"
+    "Project"    = "Curso AWS com Terraform"
+    "Module"     = "Static Website"
+    "CreateAt"   = "2023-10-01"
+    "ManagedBy"  = "Terraform"
+    "Owner"      = "Cleber Gasparoto"
+    "Repository" = "github.com/chgasparoto/curso-aws-com-terraform"
   }
 }

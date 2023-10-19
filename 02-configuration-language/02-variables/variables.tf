@@ -28,18 +28,18 @@ variable "aws_profile" {
 
 variable "allowed_fields" {
   type        = list(string)
-  description = ""
+  description = "Table fields available to use"
   default     = ["UserId", "GameTitle", "TopScore"]
 }
 
 variable "db_config" {
   type = object({
     table_name          = string
-    read_capacity       = optinal(number, 3)
+    read_capacity       = optional(number, 3)
     write_capacity      = optional(number, 3)
     deletion_protection = optional(bool, false)
   })
-  description = "Configuration for the database resource"
+  description = "Configuration for the dynamodb database"
   default = {
     table_name = "GameScores"
   }
@@ -49,11 +49,12 @@ variable "tags" {
   type        = map(string)
   description = "The common tags for all resources"
   default = {
-    "Environment" = "dev"
-    "CreateAt"    = "2023-10-01"
-    "Module"      = "Configuration Language"
-    "Component"   = "Variables"
-    "ManagedBy"   = "Terraform"
-    "Repository"  = "github.com/chgasparoto/curso-aws-com-terraform"
+    "Project"    = "Curso AWS com Terraform"
+    "Module"     = "Configuration Language"
+    "Component"  = "Variables"
+    "CreateAt"   = "2023-10-01"
+    "ManagedBy"  = "Terraform"
+    "Owner"      = "Cleber Gasparoto"
+    "Repository" = "github.com/chgasparoto/curso-aws-com-terraform"
   }
 }

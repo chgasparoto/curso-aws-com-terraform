@@ -9,109 +9,85 @@ data "aws_iam_policy_document" "lambda_assume_role" {
   }
 }
 
-# --------------- S3 Role --------------------
+module "iam_role_s3_lambda" {
+  source = "./modules/iam"
 
-data "aws_iam_policy_document" "s3" {
-  statement {
-    sid       = "AllowS3AndSNSActions"
-    effect    = "Allow"
-    resources = ["*"]
+  iam_role_name   = "${local.namespaced_service_name}-s3-lambda-role"
+  iam_policy_name = "${local.namespaced_service_name}-s3-lambda-execute-policy"
 
-    actions = [
-      "s3:*",
-      "sns:*",
-    ]
-  }
-
-  statement {
-    sid       = "AllowInvokingLambdas"
-    effect    = "Allow"
-    resources = ["arn:aws:lambda:*:*:function:*"]
-    actions   = ["lambda:InvokeFunction"]
-  }
-
-  statement {
-    sid       = "AllowCreatingLogGroups"
-    effect    = "Allow"
-    resources = ["arn:aws:logs:*:*:*"]
-    actions   = ["logs:CreateLogGroup"]
-  }
-
-  statement {
-    sid       = "AllowWritingLogs"
-    effect    = "Allow"
-    resources = ["arn:aws:logs:*:*:log-group:/aws/lambda/*:*"]
-
-    actions = [
-      "logs:CreateLogStream",
-      "logs:PutLogEvents",
-    ]
-  }
-}
-
-resource "aws_iam_role" "s3" {
-  name               = "${var.service_domain}-lambda-role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
+
+  create_log_perms_for_lambda = true
+
+  permissions = [
+    {
+      sid = "AllowS3AndSNSActions"
+      actions = [
+        "s3:GetObject",
+        "sns:Publish",
+      ]
+      resources = [
+        "arn:aws:s3:::${aws_s3_bucket.todo.id}/*",
+        "arn:aws:sns:${var.aws_region}:${local.account_id}:${aws_sns_topic.this.name}"
+      ]
+    }
+  ]
 }
 
-resource "aws_iam_policy" "s3" {
-  name   = "${aws_lambda_function.s3.function_name}-lambda-execute-policy"
-  policy = data.aws_iam_policy_document.s3.json
-}
+module "iam_role_dynamodb_lambda" {
+  source = "./modules/iam"
 
-resource "aws_iam_role_policy_attachment" "s3_execute" {
-  policy_arn = aws_iam_policy.s3.arn
-  role       = aws_iam_role.s3.name
-}
+  iam_role_name   = "${local.namespaced_service_name}-dynamodb-lambda-role"
+  iam_policy_name = "${local.namespaced_service_name}-dynamodb-lambda-execute-policy"
 
-# --------------- Dynamo Role --------------------
-
-data "aws_iam_policy_document" "dynamo" {
-  statement {
-    sid       = "AllowDynamoPermissions"
-    effect    = "Allow"
-    resources = ["*"]
-
-    actions = ["dynamodb:*"]
-  }
-
-  statement {
-    sid       = "AllowInvokingLambdas"
-    effect    = "Allow"
-    resources = ["arn:aws:lambda:*:*:function:*"]
-    actions   = ["lambda:InvokeFunction"]
-  }
-
-  statement {
-    sid       = "AllowCreatingLogGroups"
-    effect    = "Allow"
-    resources = ["arn:aws:logs:*:*:*"]
-    actions   = ["logs:CreateLogGroup"]
-  }
-
-  statement {
-    sid       = "AllowWritingLogs"
-    effect    = "Allow"
-    resources = ["arn:aws:logs:*:*:log-group:/aws/lambda/*:*"]
-
-    actions = [
-      "logs:CreateLogStream",
-      "logs:PutLogEvents",
-    ]
-  }
-}
-
-resource "aws_iam_role" "dynamo" {
-  name               = "dynamo-lambda-role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
+
+  create_log_perms_for_lambda = true
+
+  permissions = [
+    {
+      sid = "AllowS3AndSNSActions"
+      actions = [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:GetItem",
+        "dynamodb:Query",
+        "dynamodb:UpdateItem",
+      ]
+      resources = [
+        "arn:aws:dynamodb:${var.aws_region}:${local.account_id}:table/${aws_dynamodb_table.this.name}",
+        "arn:aws:dynamodb:${var.aws_region}:${local.account_id}:table/${aws_dynamodb_table.this.name}/index/*",
+      ]
+    }
+  ]
 }
 
-resource "aws_iam_policy" "dynamo" {
-  name   = "dynamo-lambda-execute-policy"
-  policy = data.aws_iam_policy_document.dynamo.json
-}
+module "iam_role_sqs_lambda" {
+  source = "./modules/iam"
 
-resource "aws_iam_role_policy_attachment" "dynamo" {
-  policy_arn = aws_iam_policy.dynamo.arn
-  role       = aws_iam_role.dynamo.name
+  iam_role_name   = "${local.namespaced_service_name}-sqs-lambda-role"
+  iam_policy_name = "${local.namespaced_service_name}-sqs-lambda-execute-policy"
+
+  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
+
+  create_log_perms_for_lambda = true
+
+  permissions = [
+    {
+      sid = "AllowS3AndSNSActions"
+      actions = [
+        "sqs:DeleteMessage",
+        "sqs:ChangeMessageVisibility",
+        "sqs:ReceiveMessage",
+        "sqs:GetQueueAttributes",
+        "dynamodb:PutItem",
+      ]
+      resources = [
+        "arn:aws:dynamodb:${var.aws_region}:${local.account_id}:table/${aws_dynamodb_table.this.name}",
+        "arn:aws:sqs:${var.aws_region}:${local.account_id}:${aws_sqs_queue.this.name}"
+      ]
+    }
+  ]
 }

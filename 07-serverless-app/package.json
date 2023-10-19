@@ -1,0 +1,40 @@
+{
+  "name": "07-serverless-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "npx tsc",
+    "postbuild": "rm -rf node_modules && npm ci && cp -R node_modules dist/node_modules"
+  },
+  "keywords": [
+    "AWS",
+    "Lambda",
+    "S3",
+    "DynamoDB",
+    "SQS",
+    "SNS",
+    "API Gateway",
+    "Cognito"
+  ],
+  "author": "Cleber Gasparoto",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.431.0",
+    "@aws-sdk/client-s3": "^3.431.0",
+    "@aws-sdk/client-sns": "^3.431.0",
+    "@aws-sdk/lib-dynamodb": "^3.431.0",
+    "jsonwebtoken": "^9.0.2",
+    "rimraf": "^5.0.5",
+    "uuid": "^9.0.1",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.125",
+    "@types/jsonwebtoken": "^9.0.4",
+    "@types/node": "^20.8.7",
+    "@types/uuid": "^9.0.6",
+    "typescript": "^5.2.2"
+  }
+}

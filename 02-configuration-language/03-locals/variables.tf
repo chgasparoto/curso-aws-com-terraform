@@ -59,6 +59,10 @@ variable "tags" {
   type        = map(string)
   description = "The common tags for all resources"
   default = {
-    Repo = "url-do-github"
+    "CreateAt"   = "2023-10-01"
+    "Module"     = "Configuration Language"
+    "Component"  = "Locals"
+    "ManagedBy"  = "Terraform"
+    "Repository" = "github.com/chgasparoto/curso-aws-com-terraform"
   }
 }

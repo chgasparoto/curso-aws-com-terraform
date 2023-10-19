@@ -1,9 +1,9 @@
 resource "aws_sns_topic" "this" {
-  name = var.service_name
+  name = local.namespaced_service_name
 }
 
-resource "aws_sns_topic_subscription" "lambda" {
-  endpoint  = aws_lambda_function.dynamo.arn
-  protocol  = "lambda"
+resource "aws_sns_topic_subscription" "sqs" {
+  protocol  = "sqs"
   topic_arn = aws_sns_topic.this.arn
+  endpoint  = aws_sqs_queue.this.arn
 }

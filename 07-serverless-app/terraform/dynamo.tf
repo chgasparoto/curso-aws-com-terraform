@@ -1,33 +1,28 @@
 resource "aws_dynamodb_table" "this" {
-  hash_key       = "TodoId"
-  name           = var.service_name
-  read_capacity  = 5
-  write_capacity = 5
+  name         = local.namespaced_service_name
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = local.dynamodb_config.partition_key
+  range_key    = local.dynamodb_config.sort_key
 
   attribute {
-    name = "TodoId"
+    name = local.dynamodb_config.partition_key
     type = "S"
   }
 
-  tags = local.common_tags
-}
+  attribute {
+    name = local.dynamodb_config.sort_key
+    type = "S"
+  }
 
-resource "aws_dynamodb_table_item" "todo" {
-  table_name = aws_dynamodb_table.this.name
-  hash_key   = aws_dynamodb_table.this.hash_key
+  attribute {
+    name = local.dynamodb_config.gsi_range_key
+    type = "S"
+  }
 
-  item = jsonencode({
-    TodoId : { S : "1" },
-    Task : { S : "Aprender Terraform" },
-    Done : { S : "0" }
-  })
-
-  #   item = <<ITEM
-  # {
-  #   "TodoId": {"S": "1"},
-  #   "Task": {"S": "Aprender Terraform"},
-  #   "Done": {"S": "0"}
-  # }
-  # ITEM
-
+  global_secondary_index {
+    name            = local.dynamodb_config.gsi_name
+    hash_key        = local.dynamodb_config.sort_key
+    range_key       = local.dynamodb_config.gsi_range_key
+    projection_type = "ALL"
+  }
 }

@@ -17,6 +17,4 @@ resource "aws_dynamodb_table" "example" {
     name = var.allowed_fields[1]
     type = "S"
   }
-
-  tags = local.common_tags
 }

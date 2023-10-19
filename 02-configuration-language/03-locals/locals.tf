@@ -4,7 +4,6 @@ locals {
   required_tags = {
     Service     = var.service_name
     Environment = var.environment
-    ManagedBy   = "Terraform"
   }
 
   common_tags = merge(var.tags, local.required_tags)
