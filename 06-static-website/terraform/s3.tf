@@ -3,7 +3,7 @@ module "logs" {
 
   name          = "${local.domain}-logs"
   acl           = "log-delivery-write"
-  force_destroy = !local.has_domain
+  force_destroy = true
 }
 
 module "website" {
@@ -11,7 +11,7 @@ module "website" {
   version = "2.0.2"
 
   name          = local.domain
-  acl           = "public-read"
+  acl           = local.bucket_website_acl
   policy        = local.bucket_policy
   force_destroy = !local.has_domain
 
@@ -41,8 +41,13 @@ module "redirect" {
   version = "2.0.2"
 
   name          = "www.${local.domain}"
-  acl           = "public-read"
+  acl           = local.bucket_website_acl
   force_destroy = !local.has_domain
+
+  block_public_acls       = local.has_domain
+  block_public_policy     = local.has_domain
+  ignore_public_acls      = local.has_domain
+  restrict_public_buckets = local.has_domain
 
   website = {
     redirect_all_requests_to = local.has_domain ? var.domain : module.website.website
