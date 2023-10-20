@@ -7,7 +7,7 @@ variable "aws_region" {
 variable "aws_account_id" {
   type        = string
   description = "The AWS account id to unique identify resources"
-  default     = "968339500772"
+  default     = "871055234888"
 }
 
 variable "service_name" {

@@ -13,7 +13,6 @@ locals {
     gsi_range_key = "Done"
   }
 
-
   common_tags = {
     "Project"    = "Curso AWS com Terraform"
     "Module"     = "Serverless App"

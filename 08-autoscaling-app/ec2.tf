@@ -1,12 +1,17 @@
 data "aws_ami" "ubuntu" {
-  owners      = ["amazon"]
   most_recent = true
-  name_regex  = "ubuntu"
 
   filter {
-    name   = "architecture"
-    values = ["x86_64"]
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
   }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"] # Canonical
 }
 
 resource "aws_launch_template" "this" {

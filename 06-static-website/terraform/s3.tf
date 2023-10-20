@@ -1,5 +1,5 @@
 module "logs" {
-  source = "github.com/chgasparoto/terraform-s3-object-notification?ref=v2.0.1"
+  source = "github.com/chgasparoto/terraform-s3-object-notification?ref=v2.0.2"
 
   name          = "${local.domain}-logs"
   acl           = "log-delivery-write"
@@ -7,12 +7,18 @@ module "logs" {
 }
 
 module "website" {
-  source = "github.com/chgasparoto/terraform-s3-object-notification?ref=v2.0.1"
+  source  = "chgasparoto/object-notification/s3"
+  version = "2.0.2"
 
   name          = local.domain
   acl           = "public-read"
   policy        = local.bucket_policy
   force_destroy = !local.has_domain
+
+  block_public_acls       = local.has_domain
+  block_public_policy     = local.has_domain
+  ignore_public_acls      = local.has_domain
+  restrict_public_buckets = local.has_domain
 
   versioning = {
     enabled = true
@@ -31,7 +37,8 @@ module "website" {
 }
 
 module "redirect" {
-  source = "github.com/chgasparoto/terraform-s3-object-notification?ref=v2.0.1"
+  source  = "chgasparoto/object-notification/s3"
+  version = "2.0.2"
 
   name          = "www.${local.domain}"
   acl           = "public-read"
