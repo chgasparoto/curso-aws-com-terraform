@@ -26,6 +26,10 @@ output "api_url" {
   value = aws_api_gateway_deployment.this.invoke_url
 }
 
+output "api_custom_domain_url" {
+  value = local.has_domain_name ? "https://${aws_api_gateway_domain_name.this[0].domain_name}" : ""
+}
+
 output "bucket_name_todo" {
   value = aws_s3_bucket.todo.bucket
 }

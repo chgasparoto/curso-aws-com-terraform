@@ -6,6 +6,9 @@ locals {
   code_path    = "${path.module}/../src"
   code_hash    = sha1(join("", [for f in fileset("${local.code_path}", "**") : filesha1("${local.code_path}/${f}")]))
 
+  has_domain_name                      = var.domain_name != null
+  create_resource_based_on_domain_name = local.has_domain_name ? 1 : 0
+
   dynamodb_config = {
     partition_key = "TodoId"
     sort_key      = "UserId"
