@@ -31,6 +31,8 @@ website/vendor
 !command/test-fixtures/**/.terraform/
 
 node_modules/
+terraform/files/
 *.zip
 tfplan.out
 plan.tfout
+07-serverless-app/dist/
