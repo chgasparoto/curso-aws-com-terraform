@@ -4,6 +4,7 @@ import * as jwt from 'jsonwebtoken';
 import { TodoService } from 'services';
 import { TodoItem } from 'types';
 import { successResponse, errorResponse } from 'utils';
+import { ZodError } from 'zod';
 
 const todoService = new TodoService(process.env.TABLE_NAME || '');
 
@@ -14,31 +15,35 @@ const verifyToken = (event: APIGatewayProxyEvent): jwt.JwtPayload | string => {
   return payload;
 };
 
-const processRequest = async (userId: string, event: APIGatewayProxyEvent) => {
+const processRequest = async (
+  userId: string,
+  event: APIGatewayProxyEvent,
+): Promise<TodoItem | TodoItem[]> => {
   const method = event.httpMethod;
-  const data: TodoItem = JSON.parse(event.body as string);
+  const payload: TodoItem = JSON.parse(event.body as string);
+  const pathParams = event.pathParameters;
 
   let todo: TodoItem[] | TodoItem;
 
   switch (method) {
     case 'DELETE':
-      todo = await todoService.delete(userId, data.TodoId);
+      todo = await todoService.delete(userId, pathParams?.todoId);
       break;
     case 'GET':
       const queryString = event.queryStringParameters;
 
-      if (queryString?.id) {
-        todo = await todoService.findOne(userId, queryString.id);
+      if (pathParams?.todoId) {
+        todo = await todoService.findOne(userId, pathParams?.todoId);
         break;
       }
 
       todo = await todoService.findMany(userId, queryString?.isDone || '');
       break;
     case 'POST':
-      todo = await todoService.create(userId, data.Task);
+      todo = await todoService.create(userId, payload.Task);
       break;
     case 'PUT':
-      todo = await todoService.update(userId, data);
+      todo = await todoService.update(userId, payload);
       break;
     default:
       throw new Error(`Unsupported method "${method}"`);
@@ -74,19 +79,32 @@ export const handler = async (
     });
 
     return successResponse(todo, event.httpMethod === 'POST' ? 201 : 200);
-  } catch (error) {
-    if (error instanceof jwt.JsonWebTokenError) {
+  } catch (err) {
+    if (err instanceof jwt.JsonWebTokenError) {
       console.error({
         message: 'Error while verifying token',
-        data: error,
+        data: err,
       });
 
       return errorResponse({ message: 'Unauthorized' }, 401);
     }
 
+    if (err instanceof ZodError) {
+      console.error({
+        message: 'Validation error',
+        data: err,
+      });
+
+      const message = JSON.parse(err.message);
+      return errorResponse(
+        { message: message.map((error: ZodError) => error.message).join('\n') },
+        400,
+      );
+    }
+
     console.error({
       message: 'Error while processing event',
-      data: error,
+      data: err,
     });
 
     return errorResponse();

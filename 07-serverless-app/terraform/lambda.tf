@@ -34,7 +34,7 @@ module "lambda_s3" {
   name            = "${local.namespaced_service_name}-s3"
   description     = "Reads file from S3 and publishes messages into a SNS topic"
   iam_role_arn    = module.iam_role_s3_lambda.iam_role_arn
-  handler         = "${local.lambdas_path}/s3/index.handler"
+  handler         = "${local.lambdas_path}/s3.handler"
   timeout_in_secs = 15
   code_hash       = data.archive_file.codebase.output_base64sha256
 
@@ -54,7 +54,7 @@ module "lambda_dynamodb" {
 
   name            = "${local.namespaced_service_name}-dynamodb"
   description     = "Triggered by API Gateway to save data into DynamoDB table"
-  handler         = "${local.lambdas_path}/dynamodb/index.handler"
+  handler         = "${local.lambdas_path}/dynamodb.handler"
   iam_role_arn    = module.iam_role_dynamodb_lambda.iam_role_arn
   timeout_in_secs = 15
   memory_in_mb    = 256
@@ -80,7 +80,7 @@ module "lambda_sqs" {
 
   name            = "${local.namespaced_service_name}-sqs"
   description     = "Triggered by SQS to forward data to API Gateway"
-  handler         = "${local.lambdas_path}/sqs/index.handler"
+  handler         = "${local.lambdas_path}/sqs.handler"
   iam_role_arn    = module.iam_role_sqs_lambda.iam_role_arn
   timeout_in_secs = 15
   memory_in_mb    = 256
@@ -116,7 +116,7 @@ resource "aws_lambda_permission" "dynamo" {
   action        = "lambda:InvokeFunction"
   function_name = module.lambda_dynamodb.name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.aws_region}:${var.aws_account_id}:*/*"
+  source_arn    = "${aws_api_gateway_rest_api.this.execution_arn}/*"
 }
 
 resource "aws_lambda_event_source_mapping" "lambda_sqs" {

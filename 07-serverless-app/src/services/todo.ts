@@ -9,7 +9,7 @@ import {
 } from '@aws-sdk/lib-dynamodb';
 import { v4 as uuidv4 } from 'uuid';
 
-import { TodoItem } from '../types';
+import { TodoItem, TodoItemSchema } from '../types';
 
 export class TodoService {
   private readonly client: DynamoDBClient;
@@ -69,6 +69,8 @@ export class TodoService {
       CreatedAt: now,
       UpdatedAt: now,
     };
+
+    TodoItemSchema.parse(item);
 
     await this.docClient.send(
       new PutCommand({

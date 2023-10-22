@@ -38,3 +38,41 @@ variable "domain_name" {
     error_message = "Invalid domain name. It must be a valid domain name."
   }
 }
+
+variable "cors_allow_headers" {
+  description = "List of allowed headers for CORS requests"
+  type        = list(string)
+  default = [
+    "Content-Type",
+    "X-Amz-Date",
+    "Authorization",
+    "X-Api-Key",
+    "X-Amz-Security-Token"
+  ]
+}
+
+variable "cors_allow_methods" {
+  description = "List of allowed methods for CORS requests"
+  type        = list(string)
+  default = [
+    "DELETE",
+    "GET",
+    "HEAD",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+  ]
+}
+
+variable "cors_allow_origins" {
+  description = "List of allowed origins for CORS requests"
+  type        = list(string)
+  default     = ["http://localhost:5173"]
+}
+
+variable "create_logs_for_apigw" {
+  type        = bool
+  description = "Whether to create and send logs from API GW to Cloudwatch"
+  default     = false
+}

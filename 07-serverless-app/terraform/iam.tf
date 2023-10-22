@@ -91,3 +91,27 @@ module "iam_role_sqs_lambda" {
     }
   ]
 }
+
+
+resource "aws_iam_role" "apigw_send_logs_cw" {
+  count = var.create_logs_for_apigw ? 1 : 0
+
+  name        = "AllowApiGwSendLogsToCloudWatch"
+  description = "Allows API Gateway to push logs to CloudWatch Logs."
+
+  managed_policy_arns = [
+    "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+  ]
+
+  assume_role_policy = jsonencode({
+    "Statement" : [
+      {
+        "Action" : "sts:AssumeRole",
+        "Effect" : "Allow",
+        "Principal" : { "Service" : "apigateway.amazonaws.com" },
+        "Sid" : ""
+      }
+    ],
+    "Version" : "2012-10-17"
+  })
+}

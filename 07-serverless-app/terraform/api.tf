@@ -1,5 +1,23 @@
 resource "aws_api_gateway_rest_api" "this" {
   name = local.namespaced_service_name
+
+  endpoint_configuration {
+    types = ["REGIONAL"]
+  }
+}
+
+# Logs
+resource "aws_api_gateway_account" "this" {
+  count = var.create_logs_for_apigw ? 1 : 0
+
+  cloudwatch_role_arn = aws_iam_role.apigw_send_logs_cw[0].arn
+}
+
+resource "aws_api_gateway_authorizer" "this" {
+  rest_api_id   = aws_api_gateway_rest_api.this.id
+  name          = "CognitoUserPoolAuthorizer"
+  type          = "COGNITO_USER_POOLS"
+  provider_arns = [aws_cognito_user_pool.this.arn]
 }
 
 resource "aws_api_gateway_resource" "v1" {
@@ -14,14 +32,13 @@ resource "aws_api_gateway_resource" "todos" {
   path_part   = "todos"
 }
 
-resource "aws_api_gateway_authorizer" "this" {
-  rest_api_id   = aws_api_gateway_rest_api.this.id
-  name          = "CognitoUserPoolAuthorizer"
-  type          = "COGNITO_USER_POOLS"
-  provider_arns = [aws_cognito_user_pool.this.arn]
+resource "aws_api_gateway_resource" "todo" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  parent_id   = aws_api_gateway_resource.todos.id
+  path_part   = "{todoId}"
 }
 
-resource "aws_api_gateway_method" "any" {
+resource "aws_api_gateway_method" "todos" {
   rest_api_id   = aws_api_gateway_rest_api.this.id
   resource_id   = aws_api_gateway_resource.todos.id
   authorization = "COGNITO_USER_POOLS"
@@ -29,20 +46,87 @@ resource "aws_api_gateway_method" "any" {
   authorizer_id = aws_api_gateway_authorizer.this.id
 }
 
-resource "aws_api_gateway_integration" "this" {
+resource "aws_api_gateway_method" "todo" {
+  rest_api_id   = aws_api_gateway_rest_api.this.id
+  resource_id   = aws_api_gateway_resource.todo.id
+  authorization = "COGNITO_USER_POOLS"
+  http_method   = "ANY"
+  authorizer_id = aws_api_gateway_authorizer.this.id
+
+  request_parameters = {
+    "method.request.path.todoId" = true
+  }
+}
+
+resource "aws_api_gateway_integration" "todo" {
   rest_api_id             = aws_api_gateway_rest_api.this.id
   resource_id             = aws_api_gateway_resource.todos.id
-  http_method             = aws_api_gateway_method.any.http_method
+  http_method             = aws_api_gateway_method.todos.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = module.lambda_dynamodb.invoke_arn
 }
 
+resource "aws_api_gateway_integration" "todos" {
+  rest_api_id             = aws_api_gateway_rest_api.this.id
+  resource_id             = aws_api_gateway_resource.todo.id
+  http_method             = aws_api_gateway_method.todo.http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = module.lambda_dynamodb.invoke_arn
+
+  request_parameters = {
+    "integration.request.path.todoId" = "method.request.path.todoId"
+  }
+}
+
 resource "aws_api_gateway_deployment" "this" {
   rest_api_id = aws_api_gateway_rest_api.this.id
-  stage_name  = var.environment
 
-  depends_on = [aws_api_gateway_integration.this]
+  triggers = {
+    # NOTE: The configuration below will satisfy ordering considerations,
+    #       but not pick up all future REST API changes. More advanced patterns
+    #       are possible, such as using the filesha1() function against the
+    #       Terraform configuration file(s) or removing the .id references to
+    #       calculate a hash against whole resources. Be aware that using whole
+    #       resources will show a difference after the initial implementation.
+    #       It will stabilize to only change when resources change afterwards.
+    redeployment = sha1(jsonencode([
+      aws_api_gateway_resource.todos.id,
+      aws_api_gateway_method.todos.id,
+      aws_api_gateway_integration.todos.id,
+      aws_api_gateway_method.todo.id,
+      aws_api_gateway_integration.todo.id,
+      aws_api_gateway_method.cors.id,
+      aws_api_gateway_integration.cors.id,
+      aws_api_gateway_method_response.cors.id,
+      aws_api_gateway_integration_response.cors.id,
+      aws_api_gateway_method.cors_todo.id,
+      aws_api_gateway_integration.cors_todo.id,
+      aws_api_gateway_method_response.cors_todo.id,
+      aws_api_gateway_integration_response.cors_todo.id,
+      aws_api_gateway_gateway_response.cors_4xx.id,
+      aws_api_gateway_gateway_response.cors_5xx.id,
+    ]))
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_api_gateway_stage" "this" {
+  deployment_id = aws_api_gateway_deployment.this.id
+  rest_api_id   = aws_api_gateway_rest_api.this.id
+  stage_name    = var.environment
+
+  dynamic "access_log_settings" {
+    for_each = var.create_logs_for_apigw ? [1] : []
+    content {
+      destination_arn = aws_cloudwatch_log_group.api_gw_logs[0].arn
+      format          = "JSON"
+    }
+  }
 }
 
 resource "aws_api_gateway_domain_name" "this" {
@@ -61,5 +145,179 @@ resource "aws_api_gateway_base_path_mapping" "this" {
 
   api_id      = aws_api_gateway_rest_api.this.id
   domain_name = aws_api_gateway_domain_name.this[0].domain_name
-  stage_name  = aws_api_gateway_deployment.this.stage_name
+  stage_name  = aws_api_gateway_stage.this.stage_name
 }
+
+# CORS
+resource "aws_api_gateway_method" "cors" {
+  rest_api_id   = aws_api_gateway_rest_api.this.id
+  resource_id   = aws_api_gateway_resource.todos.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "cors" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.todos.id
+  http_method = aws_api_gateway_method.cors.http_method
+  type        = "MOCK"
+
+  request_templates = {
+    "application/json" = "{\"statusCode\": 200}"
+  }
+}
+
+resource "aws_api_gateway_method_response" "cors" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.todos.id
+  http_method = aws_api_gateway_method.cors.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Credentials" = false
+    "method.response.header.Access-Control-Allow-Headers"     = false
+    "method.response.header.Access-Control-Allow-Methods"     = false
+    "method.response.header.Access-Control-Allow-Origin"      = false
+  }
+}
+
+resource "aws_api_gateway_integration_response" "cors" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.todos.id
+  http_method = aws_api_gateway_method.cors.http_method
+  status_code = aws_api_gateway_method_response.cors.status_code
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers"     = "'${join(",", var.cors_allow_headers)}'"
+    "method.response.header.Access-Control-Allow-Methods"     = "'${join(",", var.cors_allow_methods)}'"
+    "method.response.header.Access-Control-Allow-Origin"      = "'${join(",", var.cors_allow_origins)}'"
+    "method.response.header.Access-Control-Allow-Credentials" = "'true'"
+  }
+
+  depends_on = [aws_api_gateway_integration.cors]
+}
+
+resource "aws_api_gateway_gateway_response" "cors_4xx" {
+  response_type = "DEFAULT_4XX"
+  rest_api_id   = aws_api_gateway_rest_api.this.id
+
+  response_templates = {
+    "application/json" = "{\"message\":$context.error.messageString}"
+  }
+
+  response_parameters = {
+    "gatewayresponse.header.Access-Control-Allow-Headers"     = "'${join(",", var.cors_allow_headers)}'"
+    "gatewayresponse.header.Access-Control-Allow-Methods"     = "'${join(",", var.cors_allow_methods)}'"
+    "gatewayresponse.header.Access-Control-Allow-Origin"      = "'${join(",", var.cors_allow_origins)}'"
+    "gatewayresponse.header.Access-Control-Allow-Credentials" = "'true'"
+  }
+}
+
+resource "aws_api_gateway_gateway_response" "cors_5xx" {
+  response_type = "DEFAULT_5XX"
+  rest_api_id   = aws_api_gateway_rest_api.this.id
+
+  response_templates = {
+    "application/json" = "{\"message\":$context.error.messageString}"
+  }
+
+  response_parameters = {
+    "gatewayresponse.header.Access-Control-Allow-Headers"     = "'${join(",", var.cors_allow_headers)}'"
+    "gatewayresponse.header.Access-Control-Allow-Methods"     = "'${join(",", var.cors_allow_methods)}'"
+    "gatewayresponse.header.Access-Control-Allow-Origin"      = "'${join(",", var.cors_allow_origins)}'"
+    "gatewayresponse.header.Access-Control-Allow-Credentials" = "'true'"
+  }
+}
+
+resource "aws_api_gateway_method" "cors_todo" {
+  rest_api_id   = aws_api_gateway_rest_api.this.id
+  resource_id   = aws_api_gateway_resource.todo.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "cors_todo" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.todo.id
+  http_method = aws_api_gateway_method.cors_todo.http_method
+  type        = "MOCK"
+
+  request_templates = {
+    "application/json" = "{\"statusCode\": 200}"
+  }
+}
+
+resource "aws_api_gateway_method_response" "cors_todo" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.todo.id
+  http_method = aws_api_gateway_method.cors_todo.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Credentials" = false
+    "method.response.header.Access-Control-Allow-Headers"     = false
+    "method.response.header.Access-Control-Allow-Methods"     = false
+    "method.response.header.Access-Control-Allow-Origin"      = false
+  }
+}
+
+resource "aws_api_gateway_integration_response" "cors_todo" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.todo.id
+  http_method = aws_api_gateway_method.cors_todo.http_method
+  status_code = aws_api_gateway_method_response.cors_todo.status_code
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers"     = "'${join(",", var.cors_allow_headers)}'"
+    "method.response.header.Access-Control-Allow-Methods"     = "'${join(",", var.cors_allow_methods)}'"
+    "method.response.header.Access-Control-Allow-Origin"      = "'${join(",", var.cors_allow_origins)}'"
+    "method.response.header.Access-Control-Allow-Credentials" = "'true'"
+  }
+
+  depends_on = [aws_api_gateway_integration.cors_todo]
+}
+
+# import {
+#   to = aws_cloudwatch_log_group.api_gw_logs
+#   id = "API-Gateway-Execution-Logs_5uahgm4dih/dev"
+# }
+
+# import {
+#   to = aws_api_gateway_stage.this
+#   id = "${aws_api_gateway_rest_api.this.id}/${var.environment}"
+# }
+
+# import {
+#   to = aws_api_gateway_method.cors
+#   id = "bpti902xb9/g5u9cb/OPTIONS"
+# }
+
+# import {
+#   to = aws_api_gateway_integration.cors
+#   id = "bpti902xb9/g5u9cb/OPTIONS"
+# }
+
+# import {
+#   to = aws_api_gateway_method_response.cors
+#   id = "bpti902xb9/g5u9cb/OPTIONS/200"
+# }
+
+# import {
+#   to = aws_api_gateway_integration_response.cors
+#   id = "bpti902xb9/g5u9cb/OPTIONS/200"
+# }
+
+# import {
+#   to = aws_api_gateway_gateway_response.cors_4xx
+#   id = "bpti902xb9/DEFAULT_4XX"
+# }
+
+# import {
+#   to = aws_api_gateway_gateway_response.cors_5xx
+#   id = "bpti902xb9/DEFAULT_5XX"
+# }
+
+# import {
+#   to = aws_iam_role.developer
+#   id = "api-gateway-send-logs-to-cw"
+# }

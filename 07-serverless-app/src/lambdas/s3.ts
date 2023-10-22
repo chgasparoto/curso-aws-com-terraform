@@ -4,9 +4,8 @@ import {
   PublishCommandInput,
   SNSClient,
 } from '@aws-sdk/client-sns';
-import { S3Event, S3EventRecord, SNSMessage } from 'aws-lambda';
-import { TodoItem, TodoItemDto } from 'types';
-import { ZodError } from 'zod';
+import { S3Event, S3EventRecord } from 'aws-lambda';
+import { TodoItem, TodoItemSchema } from 'types';
 
 const client = {
   s3: new S3Client(),
@@ -14,7 +13,7 @@ const client = {
 };
 
 const isTodoItemValid = (item: TodoItem): boolean => {
-  const isValid = TodoItemDto.safeParse(item);
+  const isValid = TodoItemSchema.safeParse(item);
   return isValid.success;
 };
 
@@ -75,7 +74,7 @@ export const handler = async (event: S3Event): Promise<string | boolean> => {
   let promises = [];
 
   for (let record of parsedContent) {
-    const isValidRecord = TodoItemDto.safeParse(record);
+    const isValidRecord = TodoItemSchema.safeParse(record);
 
     if (isValidRecord.success === false) {
       console.log({
