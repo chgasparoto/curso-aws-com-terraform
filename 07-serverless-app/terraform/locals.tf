@@ -9,6 +9,14 @@ locals {
   has_domain_name                      = var.domain_name != null
   create_resource_based_on_domain_name = local.has_domain_name ? 1 : 0
 
+  formatted_cors = {
+    headers = "'${join(",", var.cors_allow_headers)}'"
+    methods = "'${join(",", var.cors_allow_methods)}'"
+    # origins     = var.cors_allow_credentials == "true" ? "'${var.cors_allow_origins_mapping[var.environment]}'" : "'${join(",", var.cors_allow_origins)}'"
+    origins     = var.cors_allow_credentials == "true" ? "'${var.cors_allow_origins_mapping["prod"]}'" : "'${join(",", var.cors_allow_origins)}'"
+    credentials = "'${var.cors_allow_credentials}'"
+  }
+
   dynamodb_config = {
     partition_key = "TodoId"
     sort_key      = "UserId"

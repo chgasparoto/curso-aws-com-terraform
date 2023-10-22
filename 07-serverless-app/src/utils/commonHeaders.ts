@@ -1,8 +1,10 @@
 export const headers = {
   'Content-Type': 'application/json',
-  'Access-Control-Allow-Origin': 'http://localhost:5173',
-  'Access-Control-Allow-Credentials': true,
-  'Access-Control-Allow-Methods': 'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT',
-  'Access-Control-Allow-Headers':
-    'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+  'Access-Control-Allow-Origin': process.env.CORS_ORIGINS.replaceAll("'", ''),
+  'Access-Control-Allow-Credentials': process.env.CORS_CREDS.replaceAll(
+    "'",
+    '',
+  ),
+  'Access-Control-Allow-Methods': process.env.CORS_METHODS.replaceAll("'", ''),
+  'Access-Control-Allow-Headers': process.env.CORS_HEADERS.replaceAll("'", ''),
 };

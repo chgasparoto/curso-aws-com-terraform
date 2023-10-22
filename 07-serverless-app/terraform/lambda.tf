@@ -66,10 +66,14 @@ module "lambda_dynamodb" {
   }
 
   env_vars = {
-    JWT_SECRET = aws_cognito_user_pool_client.this.id
-    TABLE_NAME = aws_dynamodb_table.this.name
-    GSI_NAME   = local.dynamodb_config.gsi_name
-    DEBUG      = var.environment == "dev"
+    JWT_SECRET   = aws_cognito_user_pool_client.this.id
+    TABLE_NAME   = aws_dynamodb_table.this.name
+    GSI_NAME     = local.dynamodb_config.gsi_name
+    DEBUG        = var.environment == "dev"
+    CORS_HEADERS = local.formatted_cors.headers
+    CORS_METHODS = local.formatted_cors.methods
+    CORS_ORIGINS = local.formatted_cors.origins
+    CORS_CREDS   = local.formatted_cors.credentials
 
     AWS_NODEJS_CONNECTION_REUSE_ENABLED = 1
   }

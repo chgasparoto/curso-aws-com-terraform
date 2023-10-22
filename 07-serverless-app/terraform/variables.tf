@@ -68,7 +68,30 @@ variable "cors_allow_methods" {
 variable "cors_allow_origins" {
   description = "List of allowed origins for CORS requests"
   type        = list(string)
-  default     = ["http://localhost:5173"]
+  default = [
+    "http://localhost:5173",
+    "https://terraformando.net"
+  ]
+}
+
+variable "cors_allow_origins_mapping" {
+  type        = map(string)
+  description = "Mapping for CORs origins in case Credentials header is set since it allow only one origin header"
+  default = {
+    dev  = "http://localhost:5173",
+    prod = "https://terraformando.net"
+  }
+}
+
+variable "cors_allow_credentials" {
+  description = "Whether to set the credentials or not"
+  type        = string
+  default     = "false"
+
+  validation {
+    condition     = contains(["true", "false"], var.cors_allow_credentials)
+    error_message = "CORs allow credentials only accept 'true' or 'false"
+  }
 }
 
 variable "create_logs_for_apigw" {

@@ -92,21 +92,21 @@ resource "aws_api_gateway_deployment" "this" {
     #       resources will show a difference after the initial implementation.
     #       It will stabilize to only change when resources change afterwards.
     redeployment = sha1(jsonencode([
-      aws_api_gateway_resource.todos.id,
-      aws_api_gateway_method.todos.id,
-      aws_api_gateway_integration.todos.id,
-      aws_api_gateway_method.todo.id,
-      aws_api_gateway_integration.todo.id,
-      aws_api_gateway_method.cors.id,
-      aws_api_gateway_integration.cors.id,
-      aws_api_gateway_method_response.cors.id,
-      aws_api_gateway_integration_response.cors.id,
-      aws_api_gateway_method.cors_todo.id,
-      aws_api_gateway_integration.cors_todo.id,
-      aws_api_gateway_method_response.cors_todo.id,
-      aws_api_gateway_integration_response.cors_todo.id,
-      aws_api_gateway_gateway_response.cors_4xx.id,
-      aws_api_gateway_gateway_response.cors_5xx.id,
+      aws_api_gateway_resource.todos,
+      aws_api_gateway_method.todos,
+      aws_api_gateway_integration.todos,
+      aws_api_gateway_method.todo,
+      aws_api_gateway_integration.todo,
+      aws_api_gateway_method.cors,
+      aws_api_gateway_integration.cors,
+      aws_api_gateway_method_response.cors,
+      aws_api_gateway_integration_response.cors,
+      aws_api_gateway_method.cors_todo,
+      aws_api_gateway_integration.cors_todo,
+      aws_api_gateway_method_response.cors_todo,
+      aws_api_gateway_integration_response.cors_todo,
+      aws_api_gateway_gateway_response.cors_4xx,
+      aws_api_gateway_gateway_response.cors_5xx,
     ]))
   }
 
@@ -174,7 +174,7 @@ resource "aws_api_gateway_method_response" "cors" {
   status_code = "200"
 
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Credentials" = false
+    "method.response.header.Access-Control-Allow-Credentials" = true
     "method.response.header.Access-Control-Allow-Headers"     = false
     "method.response.header.Access-Control-Allow-Methods"     = false
     "method.response.header.Access-Control-Allow-Origin"      = false
@@ -188,10 +188,10 @@ resource "aws_api_gateway_integration_response" "cors" {
   status_code = aws_api_gateway_method_response.cors.status_code
 
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Headers"     = "'${join(",", var.cors_allow_headers)}'"
-    "method.response.header.Access-Control-Allow-Methods"     = "'${join(",", var.cors_allow_methods)}'"
-    "method.response.header.Access-Control-Allow-Origin"      = "'${join(",", var.cors_allow_origins)}'"
-    "method.response.header.Access-Control-Allow-Credentials" = "'true'"
+    "method.response.header.Access-Control-Allow-Headers"     = local.formatted_cors.headers
+    "method.response.header.Access-Control-Allow-Methods"     = local.formatted_cors.methods
+    "method.response.header.Access-Control-Allow-Origin"      = local.formatted_cors.origins
+    "method.response.header.Access-Control-Allow-Credentials" = local.formatted_cors.credentials
   }
 
   depends_on = [aws_api_gateway_integration.cors]
@@ -206,10 +206,10 @@ resource "aws_api_gateway_gateway_response" "cors_4xx" {
   }
 
   response_parameters = {
-    "gatewayresponse.header.Access-Control-Allow-Headers"     = "'${join(",", var.cors_allow_headers)}'"
-    "gatewayresponse.header.Access-Control-Allow-Methods"     = "'${join(",", var.cors_allow_methods)}'"
-    "gatewayresponse.header.Access-Control-Allow-Origin"      = "'${join(",", var.cors_allow_origins)}'"
-    "gatewayresponse.header.Access-Control-Allow-Credentials" = "'true'"
+    "gatewayresponse.header.Access-Control-Allow-Headers"     = local.formatted_cors.headers
+    "gatewayresponse.header.Access-Control-Allow-Methods"     = local.formatted_cors.methods
+    "gatewayresponse.header.Access-Control-Allow-Origin"      = local.formatted_cors.origins
+    "gatewayresponse.header.Access-Control-Allow-Credentials" = local.formatted_cors.credentials
   }
 }
 
@@ -222,10 +222,10 @@ resource "aws_api_gateway_gateway_response" "cors_5xx" {
   }
 
   response_parameters = {
-    "gatewayresponse.header.Access-Control-Allow-Headers"     = "'${join(",", var.cors_allow_headers)}'"
-    "gatewayresponse.header.Access-Control-Allow-Methods"     = "'${join(",", var.cors_allow_methods)}'"
-    "gatewayresponse.header.Access-Control-Allow-Origin"      = "'${join(",", var.cors_allow_origins)}'"
-    "gatewayresponse.header.Access-Control-Allow-Credentials" = "'true'"
+    "gatewayresponse.header.Access-Control-Allow-Headers"     = local.formatted_cors.headers
+    "gatewayresponse.header.Access-Control-Allow-Methods"     = local.formatted_cors.methods
+    "gatewayresponse.header.Access-Control-Allow-Origin"      = local.formatted_cors.origins
+    "gatewayresponse.header.Access-Control-Allow-Credentials" = local.formatted_cors.credentials
   }
 }
 
@@ -268,10 +268,10 @@ resource "aws_api_gateway_integration_response" "cors_todo" {
   status_code = aws_api_gateway_method_response.cors_todo.status_code
 
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Headers"     = "'${join(",", var.cors_allow_headers)}'"
-    "method.response.header.Access-Control-Allow-Methods"     = "'${join(",", var.cors_allow_methods)}'"
-    "method.response.header.Access-Control-Allow-Origin"      = "'${join(",", var.cors_allow_origins)}'"
-    "method.response.header.Access-Control-Allow-Credentials" = "'true'"
+    "method.response.header.Access-Control-Allow-Headers"     = local.formatted_cors.headers
+    "method.response.header.Access-Control-Allow-Methods"     = local.formatted_cors.methods
+    "method.response.header.Access-Control-Allow-Origin"      = local.formatted_cors.origins
+    "method.response.header.Access-Control-Allow-Credentials" = local.formatted_cors.credentials
   }
 
   depends_on = [aws_api_gateway_integration.cors_todo]
