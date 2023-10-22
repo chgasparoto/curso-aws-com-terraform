@@ -36,3 +36,5 @@ terraform/files/
 tfplan.out
 plan.tfout
 07-serverless-app/dist/
+
+.env
