@@ -21,7 +21,7 @@ echo "Formatting terraform files recursively"
 echo "terraform fmt -recursive"
 terraform fmt -recursive
 echo "----------------------------------------"
-echo "terraform init -backend=true -backend-config=backend.hcl"
+echo "terraform init -backend=true -backend-config=backend.hcl -reconfigure"
 terraform init -backend=true -backend-config="backend.hcl"
 echo "----------------------------------------"
 echo "Validating terraform files"

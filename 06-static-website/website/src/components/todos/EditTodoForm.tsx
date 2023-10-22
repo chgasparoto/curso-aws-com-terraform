@@ -10,10 +10,17 @@ import useAxios from "@/hooks/useAxios";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { TodoTableDialog } from "./TodoTableDialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const EditTodoForm = ({ todoId }: { todoId: string }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const {
     register,
     handleSubmit,
@@ -36,7 +43,7 @@ const EditTodoForm = ({ todoId }: { todoId: string }) => {
         Task: task,
         Done: todos[todoId].Done,
       });
-      setIsOpen(false);
+      setOpen(false);
       reset();
     } catch (err) {
       console.log({ err });
@@ -52,17 +59,21 @@ const EditTodoForm = ({ todoId }: { todoId: string }) => {
   };
 
   return (
-    <TodoTableDialog
-      isOpen={isOpen}
-      trigger={
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
         <Edit
           size="15"
           className="cursor-pointer text-slate-400 hover:text-slate-100"
-          onClick={() => setIsOpen(true)}
+          onClick={() => setOpen(true)}
         />
-      }
-      title="Edit todo task"
-      content={
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[700px]">
+        <DialogHeader>
+          <DialogTitle>Edit todo task</DialogTitle>
+          <DialogDescription>
+            You can press "enter" key to save your edited task
+          </DialogDescription>
+        </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex items-center py-2 gap-5">
             <Input
@@ -83,8 +94,8 @@ const EditTodoForm = ({ todoId }: { todoId: string }) => {
             <p className="text-red-500">{`${errors.root?.serverError.message}`}</p>
           )}
         </form>
-      }
-    />
+      </DialogContent>
+    </Dialog>
   );
 };
 

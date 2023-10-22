@@ -11,6 +11,7 @@ type State = {
 type Actions = {
   setAuth: (auth: Auth) => void;
   setEmail: (email: string) => void;
+  logout: () => void;
 };
 
 const auth = {

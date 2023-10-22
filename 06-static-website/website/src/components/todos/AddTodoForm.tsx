@@ -9,7 +9,14 @@ import useAxios from "@/hooks/useAxios";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { TodoTableDialog } from "./TodoTableDialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const AddTodoForm = () => {
   const {
@@ -44,14 +51,19 @@ const AddTodoForm = () => {
   };
 
   return (
-    <TodoTableDialog
-      trigger={
+    <Dialog>
+      <DialogTrigger asChild>
         <Button>
           <Plus />
         </Button>
-      }
-      title="Add new todo"
-      content={
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[700px]">
+        <DialogHeader>
+          <DialogTitle>Add new todo</DialogTitle>
+          <DialogDescription>
+            You can press "enter" key to add new todos
+          </DialogDescription>
+        </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex items-center py-2 gap-5">
             <Input
@@ -71,8 +83,8 @@ const AddTodoForm = () => {
             <p className="text-red-500">{`${errors.root?.serverError.message}`}</p>
           )}
         </form>
-      }
-    />
+      </DialogContent>
+    </Dialog>
   );
 };
 
