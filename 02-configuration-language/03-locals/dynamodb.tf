@@ -1,20 +1,20 @@
-resource "aws_dynamodb_table" "example" {
-  name           = var.db_config.table_name
-  billing_mode   = "PROVISIONED"
-  read_capacity  = var.db_config.read_capacity
-  write_capacity = var.db_config.write_capacity
-  hash_key       = var.allowed_fields[0]
-  range_key      = var.allowed_fields[1]
+resource "aws_dynamodb_table" "games" {
+  name                        = local.namespaced_service_name
+  billing_mode                = "PROVISIONED"
+  read_capacity               = var.database_config.read_capacity
+  write_capacity              = var.database_config.write_capacity
+  deletion_protection_enabled = var.database_config.deletion_protection
 
-  deletion_protection_enabled = var.db_config.deletion_protection
+  hash_key  = var.database_config.hash_key.name
+  range_key = var.database_config.range_key.name
 
   attribute {
-    name = var.allowed_fields[0]
-    type = "S"
+    name = var.database_config.hash_key.name
+    type = var.database_config.hash_key.type
   }
 
   attribute {
-    name = var.allowed_fields[1]
-    type = "S"
+    name = var.database_config.range_key.name
+    type = var.database_config.range_key.type
   }
 }

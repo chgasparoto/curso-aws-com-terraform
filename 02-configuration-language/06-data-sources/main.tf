@@ -1,9 +1,18 @@
 # https://developer.hashicorp.com/terraform/language/data-sources
 
-# Data sources allow Terraform to use information defined
-# outside of Terraform, defined by another separate
-# Terraform configuration, or modified by functions.
 provider "aws" {
   region  = "eu-central-1"
-  profile = "tf_mac_air_m1_ggasparoto"
+  profile = "tf_macm1_ggasparoto"
+
+  default_tags {
+    tags = {
+      "Project"    = "Curso AWS com Terraform"
+      "Module"     = "Configuration Language"
+      "Component"  = "Data Sources"
+      "CreatedAt"  = "2023-10-25"
+      "ManagedBy"  = "Terraform"
+      "Owner"      = "Cleber Gasparoto"
+      "Repository" = "github.com/chgasparoto/curso-aws-com-terraform"
+    }
+  }
 }

@@ -1,0 +1,5 @@
+    bucket         = "tfstate-2023-871055234888"
+    key            = "dev/03-backend-file/terraform.tfstate"
+    region         = "eu-central-1"
+    profile        = "tf_macm1_ggasparoto"
+    dynamodb_table = "tflock-tfstate-2023-871055234888"

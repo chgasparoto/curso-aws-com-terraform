@@ -11,7 +11,7 @@ terraform {
   }
 }
 
-resource "random_pet" "this" {
+resource "random_pet" "string" {
   length = 4
 }
 
@@ -22,9 +22,9 @@ variable "environment" {
 
 locals {
   # Interpolation
-  literal_string      = "Isto é uma string literal, sendo uma sequência de caracteres dentro de aspas duplas"
-  concatenated_string = "${random_pet.this.id}-text-123-${var.environment}"
-  function_string     = replace(local.literal_string, "uma", "uMa")
+  literal_string    = "Isto é uma string literal, sendo uma sequência de caracteres dentro de aspas duplas"
+  concatened_string = "${random_pet.string.id}-texto-aleatório-${var.environment}"
+  function_string   = replace(local.literal_string, "uma", "UMA")
 
   # Heredoc
   heredoc_string = <<EOT
@@ -35,23 +35,29 @@ locals {
   indented_heredoc_string = <<-EOT
   hello
     world
+      Terraform
   EOT
 
   # JSON or YML
   # https://developer.hashicorp.com/terraform/language/expressions/strings#generating-json-or-yaml
   json = jsonencode({
-    a = 1
-    b = "hello"
+    hello = "world"
+    foo   = "bar"
+    a     = "b"
   })
+  decoded_json = jsondecode(local.json)
 }
 
 output "locals" {
-  value = [
-    local.literal_string,
-    local.concatenated_string,
-    local.function_string,
-    local.heredoc_string,
-    local.indented_heredoc_string,
-    local.json,
-  ]
+  value = {
+    literal_string    = local.literal_string
+    concatened_string = local.concatened_string
+    function_string   = local.function_string
+
+    heredoc_string          = local.heredoc_string
+    indented_heredoc_string = local.indented_heredoc_string
+
+    json         = local.json
+    decoded_json = local.decoded_json["foo"]
+  }
 }

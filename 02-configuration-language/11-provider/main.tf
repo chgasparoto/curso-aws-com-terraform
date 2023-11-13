@@ -1,51 +1,40 @@
 # https://developer.hashicorp.com/terraform/language/meta-arguments/resource-provider
 
-terraform {
-  required_version = "~> 1.6"
+provider "aws" {
+  region  = "eu-central-1"
+  profile = "tf_macm1_ggasparoto"
 
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.15"
-    }
-    random = {
-      source  = "hashicorp/random"
-      version = "~> 3.5"
+  default_tags {
+    tags = {
+      "Project"    = "Curso AWS com Terraform"
+      "Module"     = "Configuration Language"
+      "Component"  = "Meta-Argument: Provider"
+      "CreatedAt"  = "2023-10-25"
+      "ManagedBy"  = "Terraform"
+      "Owner"      = "Cleber Gasparoto"
+      "Repository" = "github.com/chgasparoto/curso-aws-com-terraform"
     }
   }
 }
 
 provider "aws" {
-  region  = "eu-central-1"
-  profile = "tf_mac_air_m1_ggasparoto"
-}
-
-provider "aws" {
+  alias   = "sao_paulo"
   region  = "sa-east-1"
-  profile = "tf_mac_air_m1_ggasparoto"
+  profile = "tf_macm1_ggasparoto"
 
-  alias = "sao_paulo"
+  default_tags {
+    tags = {
+      "Project"    = "Curso AWS com Terraform"
+      "Module"     = "Configuration Language"
+      "Component"  = "Meta-Argument: Provider"
+      "CreatedAt"  = "2023-10-25"
+      "ManagedBy"  = "Terraform"
+      "Owner"      = "Cleber Gasparoto"
+      "Repository" = "github.com/chgasparoto/curso-aws-com-terraform"
+    }
+  }
 }
 
 resource "random_pet" "this" {
   length = 5
-}
-
-data "aws_caller_identity" "this" {}
-
-resource "aws_s3_bucket" "frankfurt" {
-  bucket = "${data.aws_caller_identity.this.account_id}-${random_pet.this.id}"
-}
-
-resource "aws_s3_bucket" "sao_paulo" {
-  provider = aws.sao_paulo
-
-  bucket = "${data.aws_caller_identity.this.account_id}-${random_pet.this.id}-sp"
-}
-
-output "bucket_name" {
-  value = {
-    frankfurt = aws_s3_bucket.frankfurt.bucket
-    sao_paulo = aws_s3_bucket.sao_paulo.bucket
-  }
 }

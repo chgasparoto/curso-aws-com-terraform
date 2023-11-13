@@ -1,7 +1,9 @@
-# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity
-data "aws_caller_identity" "this" {}
+data "aws_caller_identity" "current" {}
 
-# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/s3_bucket
-# data "aws_s3_bucket" "logs" {
-#   bucket = "${local.account_id}-nome-do-bucket-dentro-do-console-da-aws"
-# }
+data "aws_s3_bucket" "caixa_do_cleber" {
+  bucket = "a-caixa-magica-do-cleber-001"
+}
+
+data "aws_dynamodb_table" "tableName" {
+  name = "minha-tabela-no-dynamodb"
+}

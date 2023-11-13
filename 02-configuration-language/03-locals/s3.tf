@@ -1,3 +1,3 @@
 resource "aws_s3_bucket" "images" {
-  bucket = "${local.namespaced_service_name}-images-123454321"
+  bucket = "${replace(local.namespaced_service_name, "_", "-")}-images-123321"
 }

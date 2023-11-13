@@ -1,24 +1,29 @@
-# https://registry.terraform.io/providers/hashicorp/aws/latest/docs
-provider "aws" {
-  region  = "eu-central-1"
-  profile = "tf_mac_air_m1_ggasparoto"
-}
-
-# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket
-resource "aws_s3_bucket" "fotos" {
-  bucket = "meu-bucket-criado-com-terraform-2023-01"
-
-  tags = {
-    "CreateAt"   = "2023-10-01"
-    "Module"     = "Terraform Basic"
-    "ManagedBy"  = "Terraform"
-    "Repository" = "github.com/chgasparoto/curso-aws-com-terraform"
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
   }
 }
 
-# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_versioning
-resource "aws_s3_bucket_versioning" "fotos" {
-  bucket = aws_s3_bucket.fotos.id
+# Configure the AWS Provider
+provider "aws" {
+  region  = "eu-central-1"
+  profile = "tf_macm1_ggasparoto"
+}
+
+resource "aws_s3_bucket" "example" {
+  bucket = "o-bucket-do-cleber-criado-no-terraform-em-2023-01"
+
+  tags = {
+    CreatedAt = "2023-10-23"
+    ManagedBy = "Terraform"
+  }
+}
+
+resource "aws_s3_bucket_versioning" "versioning_example" {
+  bucket = aws_s3_bucket.example.id
 
   versioning_configuration {
     status = "Enabled"

@@ -11,38 +11,19 @@ variable "environment" {
 
 variable "aws_region" {
   type        = string
-  description = "The AWS region to deploy the infrastructure to"
-  default     = "eu-central-1"
+  description = "The region to deploy the infra to"
+  # default     = "eu-central-1"
 
   validation {
-    condition     = substr(var.aws_region, 0, 2) == "eu"
-    error_message = "Only European regions can be selected"
+    condition     = can(regex("^[a-z][a-z]-[a-z]+-[0-9]+$", var.aws_region))
+    error_message = "Invalid AWS region name"
   }
 }
 
 variable "aws_profile" {
   type        = string
-  description = "The credentials Terraform should use to authenticate into AWS"
-  default     = "tf_mac_air_m1_ggasparoto"
-}
-
-variable "allowed_fields" {
-  type        = list(string)
-  description = "Table fields available to use"
-  default     = ["UserId", "GameTitle", "TopScore"]
-}
-
-variable "db_config" {
-  type = object({
-    table_name          = string
-    read_capacity       = optional(number, 3)
-    write_capacity      = optional(number, 3)
-    deletion_protection = optional(bool, false)
-  })
-  description = "Configuration for the dynamodb database"
-  default = {
-    table_name = "GameScores"
-  }
+  description = "The AWS profile to use to authenticate with Terraform. Use 'default' in case you have only one account configured"
+  default     = "tf_macm1_ggasparoto"
 }
 
 variable "tags" {
@@ -52,9 +33,51 @@ variable "tags" {
     "Project"    = "Curso AWS com Terraform"
     "Module"     = "Configuration Language"
     "Component"  = "Variables"
-    "CreateAt"   = "2023-10-01"
+    "CreatedAt"  = "2023-10-24"
     "ManagedBy"  = "Terraform"
     "Owner"      = "Cleber Gasparoto"
     "Repository" = "github.com/chgasparoto/curso-aws-com-terraform"
   }
+}
+
+variable "dynamodb_field_list" {
+  type        = list(string)
+  description = "List of fields that the DynamoDB table has"
+  default     = ["UserId", "GameTitle"]
+}
+
+variable "database_config" {
+  type = object({
+    table_name          = string
+    read_capacity       = optional(number, 3)
+    write_capacity      = optional(number, 3)
+    deletion_protection = optional(bool, false)
+    hash_key = object({
+      name = string
+      type = string
+    })
+    range_key = object({
+      name = string
+      type = string
+    })
+  })
+  description = "The configuration to create the DynamoDB table with"
+  default = {
+    table_name = "GameScores"
+    hash_key = {
+      name = "UserId"
+      type = "S"
+    }
+    range_key = {
+      name = "GameTitle"
+      type = "S"
+    }
+  }
+}
+
+variable "cidr_block" {
+  type        = string
+  description = "The IPv4 CIDR block for the VPC"
+  default     = "10.0.0.0/16"
+  sensitive   = true
 }

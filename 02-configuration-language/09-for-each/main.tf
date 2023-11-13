@@ -1,23 +1,12 @@
 # https://developer.hashicorp.com/terraform/language/meta-arguments/for_each
 
-terraform {
-  required_version = "~> 1.6"
-
-  required_providers {
-    random = {
-      source  = "hashicorp/random"
-      version = "~> 3.5"
-    }
-  }
-}
-
-variable "create_random_strings" {
+variable "create_random_pets" {
   type    = bool
   default = true
 }
 
-resource "random_pet" "this" {
-  for_each = var.create_random_strings ? {
+resource "random_pet" "for_each" {
+  for_each = var.create_random_pets ? {
     dog  = 4
     cat  = 2
     bird = 3
@@ -29,10 +18,10 @@ resource "random_pet" "this" {
 }
 
 output "pets" {
-  value = var.create_random_strings ? [
-    random_pet.this["dog"].id,
-    random_pet.this["cat"].id,
-    random_pet.this["bird"].id,
-    random_pet.this["pig"].id
+  value = var.create_random_pets ? [
+    random_pet.for_each["dog"].id,
+    random_pet.for_each["cat"].id,
+    random_pet.for_each["bird"].id,
+    random_pet.for_each["pig"].id,
   ] : null
 }

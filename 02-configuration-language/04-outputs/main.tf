@@ -2,14 +2,16 @@
 
 provider "aws" {
   region  = "eu-central-1"
-  profile = "tf_mac_air_m1_ggasparoto"
+  profile = "tf_macm1_ggasparoto"
 
   default_tags {
     tags = {
-      "CreateAt"   = "2023-10-01"
+      "Project"    = "Curso AWS com Terraform"
       "Module"     = "Configuration Language"
       "Component"  = "Outputs"
+      "CreatedAt"  = "2023-10-24"
       "ManagedBy"  = "Terraform"
+      "Owner"      = "Cleber Gasparoto"
       "Repository" = "github.com/chgasparoto/curso-aws-com-terraform"
     }
   }
