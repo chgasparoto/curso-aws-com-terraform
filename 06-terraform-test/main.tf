@@ -10,7 +10,7 @@ provider "aws" {
     tags = {
       "Project"    = "Curso AWS com Terraform"
       "Module"     = "Terraform Test"
-      "CreatedAt"  = "2023-11-12"
+      "CreatedAt"  = "2023-11-14"
       "ManagedBy"  = "Terraform"
       "Owner"      = "Cleber Gasparoto"
       "Repository" = "github.com/chgasparoto/curso-aws-com-terraform"

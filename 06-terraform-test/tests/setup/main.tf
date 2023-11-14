@@ -7,26 +7,26 @@ terraform {
   }
 }
 
-resource "random_pet" "bucket_prefix" {
+resource "random_pet" "service_name" {
   length = 6
 }
 
 resource "random_integer" "read_capacity" {
   min = 1
-  max = 10
+  max = 8
 }
 
 resource "random_integer" "write_capacity" {
   min = 1
-  max = 10
+  max = 8
 }
 
-output "bucket_prefix" {
-  value = random_pet.bucket_prefix.id
+output "bucket_name" {
+  value = random_pet.service_name.id
 }
 
 output "table_name" {
-  value = random_pet.bucket_prefix.id
+  value = random_pet.service_name.id
 }
 
 output "read_capacity" {

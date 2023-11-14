@@ -1,10 +1,12 @@
-# variables => 0-1
-# provider => 0-n
 # run => 1-n
+# provider => 0-n
+# variables => 0-1
+
+# Terraform roda os testes na sequência em que foram declarados
 
 variables {
   aws_region     = "eu-west-3" # Paris
-  bucket_name    = "este-e-um-nome-de-balde-aleatorio-1237890"
+  bucket_name    = "este-e-um-nome-de-balde-aleatorio-1234567890"
   table_name     = "usuarios"
   read_capacity  = 5
   write_capacity = 5
@@ -16,13 +18,13 @@ provider "aws" {
 
 # unit test
 run "validate_inputs" {
-  # tfstate in-memory global - para todos os blocos run sem module
+  # tfstate in-memory global -> pois não tem o bloco `module` configurado
 
   command = plan
 
   variables {
     aws_region     = "europe-west-3"
-    bucket_name    = "Nome Inválido"
+    bucket_name    = "nome de bucket invalido"
     table_name     = "nome de tabela invalido"
     read_capacity  = 0
     write_capacity = -5
@@ -38,7 +40,7 @@ run "validate_inputs" {
 }
 
 run "setup" {
-  # tfstate in-memory - module setup
+  # tfstate in-memory -> module setup
 
   module {
     source = "./tests/setup"
@@ -47,7 +49,7 @@ run "setup" {
 
 # integration test
 run "create_tables" {
-  # tfstate in-memory global
+  # tfstate in-memory global -> pois não tem o bloco `module` configurado
 
   variables {
     table_name     = run.setup.table_name
@@ -56,17 +58,17 @@ run "create_tables" {
   }
 
   assert {
-    condition     = aws_dynamodb_table.users.name == var.table_name
+    condition     = aws_dynamodb_table.users.name == run.setup.table_name
     error_message = "Invalid table name"
   }
 
   assert {
-    condition     = aws_dynamodb_table.users.read_capacity == var.read_capacity
+    condition     = aws_dynamodb_table.users.read_capacity == run.setup.read_capacity
     error_message = "Invalid table read capacity"
   }
 
   assert {
-    condition     = aws_dynamodb_table.users.write_capacity == var.write_capacity
+    condition     = aws_dynamodb_table.users.write_capacity == run.setup.write_capacity
     error_message = "Invalid table write capacity"
   }
 }
@@ -76,11 +78,11 @@ run "create_buckets" {
   # tfstate in-memory global
 
   variables {
-    bucket_name = run.setup.bucket_prefix
+    bucket_name = run.setup.bucket_name
   }
 
   assert {
-    condition     = aws_s3_bucket.s3_bucket.bucket == var.bucket_name
+    condition     = aws_s3_bucket.s3_bucket.id == run.setup.bucket_name
     error_message = "Invalid bucket name"
   }
 
@@ -95,7 +97,10 @@ run "create_buckets" {
   }
 }
 
+# unit test
 run "website_is_running" {
+  # tfstate in-memory -> module http
+
   command = plan
 
   module {
