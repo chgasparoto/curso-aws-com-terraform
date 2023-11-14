@@ -38,8 +38,7 @@ resource "aws_s3_bucket_acl" "s3_bucket" {
   ]
 
   bucket = aws_s3_bucket.s3_bucket.id
-
-  acl = "public-read"
+  acl    = "public-read"
 }
 
 resource "aws_s3_bucket_policy" "s3_bucket" {
@@ -70,12 +69,12 @@ resource "aws_s3_object" "index" {
   bucket       = aws_s3_bucket.s3_bucket.id
   key          = "index.html"
   source       = "www/index.html"
-  content_type = "text/html"
+  content_type = "text/html; charset=utf-8"
 }
 
 resource "aws_s3_object" "error" {
   bucket       = aws_s3_bucket.s3_bucket.id
   key          = "error.html"
   source       = "www/error.html"
-  content_type = "text/html"
+  content_type = "text/html; charset=utf-8"
 }
