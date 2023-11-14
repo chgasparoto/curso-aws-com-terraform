@@ -28,10 +28,11 @@ module "s3_static_website" {
   }
 
   versioning = {
-    enabled = true
+    status = "Enabled"
   }
 
   filepath = "./website"
+
   website = {
     index_document = "index.html"
     error_document = "error.html"
