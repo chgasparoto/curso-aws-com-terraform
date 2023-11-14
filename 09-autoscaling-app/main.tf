@@ -1,6 +1,5 @@
 provider "aws" {
-  region  = var.aws_region
-  profile = "tf_mac_air_m1_ggasparoto"
+  region = var.aws_region
 
   default_tags {
     tags = local.common_tags
