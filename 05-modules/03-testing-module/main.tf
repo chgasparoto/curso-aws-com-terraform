@@ -7,7 +7,7 @@ provider "aws" {
     tags = {
       "Project"    = "Curso AWS com Terraform"
       "Module"     = "Modules"
-      "Component"  = "Consuming modules"
+      "Component"  = "Testing modules"
       "CreatedAt"  = "2023-11-14"
       "ManagedBy"  = "Terraform"
       "Owner"      = "Cleber Gasparoto"

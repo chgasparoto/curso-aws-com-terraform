@@ -1,8 +1,7 @@
+
 resource "aws_s3_bucket" "this" {
   bucket        = local.bucket_name
   force_destroy = var.force_destroy
-
-  tags = var.tags
 }
 
 resource "aws_s3_bucket_ownership_controls" "this" {
@@ -70,11 +69,11 @@ resource "aws_s3_bucket_logging" "this" {
 resource "aws_s3_bucket_website_configuration" "this" {
   count = local.is_website_set ? 1 : 0
 
-
-  bucket = aws_s3_bucket.this.bucket
+  bucket = aws_s3_bucket.this.id
 
   dynamic "index_document" {
     for_each = lookup(var.website, "index_document", null) == null ? [] : [var.website]
+
     content {
       suffix = index_document.value["index_document"]
     }

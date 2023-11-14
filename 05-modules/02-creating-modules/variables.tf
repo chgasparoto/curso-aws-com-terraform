@@ -35,24 +35,6 @@ variable "force_destroy" {
   default     = false
 }
 
-variable "tags" {
-  description = "Bucket tags"
-  type        = map(string)
-  default     = {}
-}
-
-variable "key_prefix" {
-  description = "Prefix to put your key(s) inside the bucket. E.g.: logs -> all files will be uploaded under logs/"
-  type        = string
-  default     = ""
-}
-
-variable "filepath" {
-  description = "The local path where the desired files will be uploaded to the bucket"
-  type        = string
-  default     = ""
-}
-
 variable "versioning" {
   description = "Map containing versioning configuration"
 
@@ -109,4 +91,16 @@ variable "logging" {
 
   nullable = true
   default  = {}
+}
+
+variable "key_prefix" {
+  description = "Prefix to put your key(s) inside the bucket. E.g.: logs -> all files will be uploaded under logs/"
+  type        = string
+  default     = ""
+}
+
+variable "filepath" {
+  description = "The local path where the desired files will be uploaded to the bucket"
+  type        = string
+  default     = ""
 }
