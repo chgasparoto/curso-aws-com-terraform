@@ -35,6 +35,6 @@ terraform/files/
 *.zip
 tfplan.out
 plan.tfout
-07-serverless-app/dist/
+08-serverless-app/dist/
 
 .env
