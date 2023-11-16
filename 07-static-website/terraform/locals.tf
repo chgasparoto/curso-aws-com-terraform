@@ -1,33 +1,15 @@
 locals {
-  has_domain         = var.domain != ""
-  domain             = local.has_domain ? var.domain : random_pet.website.id
-  bucket_website_acl = local.has_domain ? "private" : "public-read"
-  regional_domain    = module.website.regional_domain_name
-  website_filepath   = "${path.module}/../website"
+  account_id      = data.aws_caller_identity.current.account_id
+  has_domain      = var.domain_name != null
+  domain_name     = local.has_domain ? var.domain_name : random_pet.website.id
+  regional_domain = "${local.domain_name}.s3.${var.aws_region}.amazonaws.com"
 
-  bucket_policy = {
-    json = jsonencode(
-      {
-        Version = "2008-10-17",
-        Statement = [
-          {
-            Sid = "AllowCloufrontGetBucketObjects",
-            Effect : "Allow",
-            Principal : {
-              "AWS" : "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${aws_cloudfront_origin_access_identity.this.id}"
-            },
-            Action : "s3:GetObject",
-            Resource : "arn:aws:s3:::${local.domain}/*"
-          }
-        ]
-      }
-    )
-  }
+  distribution_id = "E1UDT262JFMQPG"
 
   common_tags = {
     "Project"    = "Curso AWS com Terraform"
     "Module"     = "Static Website"
-    "CreateAt"   = "2023-10-01"
+    "CreateAt"   = "2023-11-15"
     "ManagedBy"  = "Terraform"
     "Owner"      = "Cleber Gasparoto"
     "Repository" = "github.com/chgasparoto/curso-aws-com-terraform"

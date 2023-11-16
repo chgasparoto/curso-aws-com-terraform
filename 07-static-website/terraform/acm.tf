@@ -3,9 +3,9 @@ resource "aws_acm_certificate" "this" {
 
   provider = aws.us_east_1
 
-  domain_name               = local.domain
+  domain_name               = local.domain_name
   validation_method         = "DNS"
-  subject_alternative_names = ["*.${local.domain}"]
+  subject_alternative_names = ["*.${local.domain_name}"]
 }
 
 resource "aws_acm_certificate_validation" "this" {

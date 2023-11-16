@@ -12,11 +12,5 @@ terraform {
     }
   }
 
-  backend "s3" {
-    bucket         = "tfstate-2023-871055234888"
-    key            = "dev/07-static-website/terraform.tfstate"
-    region         = "eu-central-1"
-    profile        = "tf_macm1_ggasparoto"
-    dynamodb_table = "tflock-tfstate-2023-871055234888"
-  }
+  backend "s3" {}
 }

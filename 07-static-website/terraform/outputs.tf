@@ -1,9 +1,9 @@
 output "website_url" {
-  value = local.has_domain ? var.domain : module.website.website
+  value = local.has_domain ? var.domain_name : aws_cloudfront_distribution.this.domain_name
 }
 
-output "cdn_url" {
-  value = aws_cloudfront_distribution.this.domain_name
+output "bucket_arn" {
+  value = module.website_bucket.arn
 }
 
 output "distribution_id" {
