@@ -15,14 +15,14 @@ resource "aws_dynamodb_table" "this" {
   }
 
   attribute {
-    name = local.dynamodb_config.gsi_range_key
+    name = local.dynamodb_config.gsi_sort_key
     type = "S"
   }
 
   global_secondary_index {
     name            = local.dynamodb_config.gsi_name
     hash_key        = local.dynamodb_config.sort_key
-    range_key       = local.dynamodb_config.gsi_range_key
+    range_key       = local.dynamodb_config.gsi_sort_key
     projection_type = "ALL"
   }
 }

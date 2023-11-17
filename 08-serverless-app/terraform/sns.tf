@@ -4,6 +4,6 @@ resource "aws_sns_topic" "this" {
 
 resource "aws_sns_topic_subscription" "sqs" {
   protocol  = "sqs"
-  topic_arn = aws_sns_topic.this.arn
   endpoint  = aws_sqs_queue.this.arn
+  topic_arn = aws_sns_topic.this.arn
 }

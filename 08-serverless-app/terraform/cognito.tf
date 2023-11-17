@@ -1,7 +1,8 @@
 resource "aws_cognito_user_pool" "this" {
-  name                     = local.namespaced_service_name
   auto_verified_attributes = ["email"]
-  deletion_protection      = "INACTIVE"
+  deletion_protection      = "ACTIVE"
+  mfa_configuration        = "OFF"
+  name                     = local.namespaced_service_name
   username_attributes      = ["email"]
 
   account_recovery_setting {
@@ -38,7 +39,6 @@ resource "aws_cognito_user_pool" "this" {
     mutable                  = true
     name                     = "email"
     required                 = true
-
     string_attribute_constraints {
       max_length = "2048"
       min_length = "0"
@@ -65,7 +65,7 @@ resource "aws_cognito_user_pool" "this" {
 
 resource "aws_cognito_user_pool_client" "this" {
   user_pool_id = aws_cognito_user_pool.this.id
-  name         = "react-client"
+  name         = "react-client-${var.environment}"
 
   access_token_validity                         = 60
   allowed_oauth_flows                           = ["code"]
@@ -94,21 +94,6 @@ resource "aws_cognito_user_pool_client" "this" {
 }
 
 resource "aws_cognito_user_pool_domain" "this" {
+  domain       = "${var.service_domain}-${var.environment}"
   user_pool_id = aws_cognito_user_pool.this.id
-  domain       = var.service_domain
 }
-
-# import {
-#   to = aws_cognito_user_pool.pool
-#   id = "eu-central-1_vou0rIfwG"
-# }
-
-# import {
-#   to = aws_cognito_user_pool_client.client
-#   id = "eu-central-1_vou0rIfwG/g6k14keu1l40veaac6eje9nvf"
-# }
-
-# import {
-#   to = aws_cognito_user_pool_domain.main
-#   id = "curso-terraform"
-# }

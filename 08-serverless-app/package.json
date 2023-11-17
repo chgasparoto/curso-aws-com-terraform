@@ -1,7 +1,7 @@
 {
-  "name": "07-serverless-app",
+  "name": "08-serverless-app",
   "version": "1.0.0",
-  "description": "",
+  "description": "Code for the lambdas to run the serveless app TODOS",
   "main": "dist/index.js",
   "scripts": {
     "prebuild": "rimraf dist",

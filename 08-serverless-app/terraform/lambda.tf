@@ -1,29 +1,27 @@
 # --------------- LAMBDA CODE --------------------
-resource "null_resource" "build" {
-  triggers = {
+resource "terraform_data" "build" {
+  triggers_replace = {
     code_hash = local.code_hash
   }
 
   provisioner "local-exec" {
-    working_dir = "${path.module}/../"
     command     = "npm run build"
+    working_dir = "${path.module}/../"
   }
 }
 
-resource "random_uuid" "this" {
+resource "random_uuid" "build_id" {
   keepers = {
     code_hash = local.code_hash
   }
 }
 
 data "archive_file" "codebase" {
-  depends_on = [
-    null_resource.build
-  ]
+  depends_on = [terraform_data.build]
 
   type        = "zip"
   source_dir  = "${path.module}/../dist"
-  output_path = "files/${random_uuid.this.result}.zip"
+  output_path = "files/${random_uuid.build_id.result}.zip"
 }
 
 # --------------- LAMBDA INFRA --------------------
@@ -35,12 +33,13 @@ module "lambda_s3" {
   description     = "Reads file from S3 and publishes messages into a SNS topic"
   iam_role_arn    = module.iam_role_s3_lambda.iam_role_arn
   handler         = "${local.lambdas_path}/s3.handler"
-  timeout_in_secs = 15
+  timeout_in_secs = 20
+  memory_in_mb    = 256
   code_hash       = data.archive_file.codebase.output_base64sha256
 
   s3_config = {
     bucket = aws_s3_bucket.lambda_artefacts.bucket
-    key    = aws_s3_object.lambda_artefacts.key
+    key    = aws_s3_object.lambda_artefact.key
   }
 
   env_vars = {
@@ -62,7 +61,7 @@ module "lambda_dynamodb" {
 
   s3_config = {
     bucket = aws_s3_bucket.lambda_artefacts.bucket
-    key    = aws_s3_object.lambda_artefacts.key
+    key    = aws_s3_object.lambda_artefact.key
   }
 
   env_vars = {
@@ -83,7 +82,7 @@ module "lambda_sqs" {
   source = "./modules/lambda"
 
   name            = "${local.namespaced_service_name}-sqs"
-  description     = "Triggered by SQS to forward data to API Gateway"
+  description     = "Triggered by SQS to save data into DynamoDB"
   handler         = "${local.lambdas_path}/sqs.handler"
   iam_role_arn    = module.iam_role_sqs_lambda.iam_role_arn
   timeout_in_secs = 15
@@ -92,7 +91,7 @@ module "lambda_sqs" {
 
   s3_config = {
     bucket = aws_s3_bucket.lambda_artefacts.bucket
-    key    = aws_s3_object.lambda_artefacts.key
+    key    = aws_s3_object.lambda_artefact.key
   }
 
   env_vars = {
@@ -107,6 +106,14 @@ module "lambda_sqs" {
 
 # --------------- LAMBDA TRIGGERS --------------------
 
+resource "aws_lambda_permission" "apigw" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = module.lambda_dynamodb.name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.this.execution_arn}/*"
+}
+
 resource "aws_lambda_permission" "s3" {
   statement_id  = "AllowExecutionFromS3Bucket"
   action        = "lambda:InvokeFunction"
@@ -115,15 +122,7 @@ resource "aws_lambda_permission" "s3" {
   source_arn    = aws_s3_bucket.todo.arn
 }
 
-resource "aws_lambda_permission" "dynamo" {
-  statement_id  = "AllowExecutionFromAPIGateway"
-  action        = "lambda:InvokeFunction"
-  function_name = module.lambda_dynamodb.name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.this.execution_arn}/*"
-}
-
 resource "aws_lambda_event_source_mapping" "lambda_sqs" {
-  event_source_arn = aws_sqs_queue.this.arn
   function_name    = module.lambda_sqs.name
+  event_source_arn = aws_sqs_queue.this.arn
 }

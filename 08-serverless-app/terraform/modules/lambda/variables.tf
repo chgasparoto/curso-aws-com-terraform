@@ -66,12 +66,6 @@ variable "env_vars" {
   description = "The environments vars for this lambda"
 }
 
-variable "create_function_url" {
-  type        = bool
-  description = "Whether to create a callable URL for this function"
-  default     = false
-}
-
 variable "log_retetion_days" {
   type        = number
   description = "How long should Cloudwatch keeps the lambda logs"

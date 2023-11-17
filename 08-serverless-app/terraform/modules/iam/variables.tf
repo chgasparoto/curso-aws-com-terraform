@@ -1,3 +1,20 @@
+variable "permissions" {
+  type = list(object({
+    sid       = string
+    effect    = optional(string, "Allow")
+    resources = list(string)
+    actions   = list(string)
+  }))
+  description = "The permissions to set for the given policy document"
+}
+
+
+variable "create_log_perms_for_lambda" {
+  type        = bool
+  description = "Whether to create the Lambda permissions for Cloudwatch"
+  default     = false
+}
+
 variable "iam_role_name" {
   type        = string
   description = "The name of the IAM role"
@@ -21,19 +38,4 @@ variable "iam_policy_name" {
 variable "assume_role_policy" {
   type        = string
   description = "The assume role policy in JSON format"
-}
-
-variable "create_log_perms_for_lambda" {
-  type        = bool
-  description = "Whether to create the Lambda permissions for Cloudwatch"
-  default     = false
-}
-
-variable "permissions" {
-  type = list(object({
-    sid       = string
-    resources = list(string)
-    actions   = list(string)
-  }))
-  description = "The permissions to set for the given policy document"
 }

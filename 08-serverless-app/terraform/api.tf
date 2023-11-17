@@ -58,7 +58,7 @@ resource "aws_api_gateway_method" "todo" {
   }
 }
 
-resource "aws_api_gateway_integration" "todo" {
+resource "aws_api_gateway_integration" "todos" {
   rest_api_id             = aws_api_gateway_rest_api.this.id
   resource_id             = aws_api_gateway_resource.todos.id
   http_method             = aws_api_gateway_method.todos.http_method
@@ -67,7 +67,7 @@ resource "aws_api_gateway_integration" "todo" {
   uri                     = module.lambda_dynamodb.invoke_arn
 }
 
-resource "aws_api_gateway_integration" "todos" {
+resource "aws_api_gateway_integration" "todo" {
   rest_api_id             = aws_api_gateway_rest_api.this.id
   resource_id             = aws_api_gateway_resource.todo.id
   http_method             = aws_api_gateway_method.todo.http_method
@@ -93,9 +93,10 @@ resource "aws_api_gateway_deployment" "this" {
     #       It will stabilize to only change when resources change afterwards.
     redeployment = sha1(jsonencode([
       aws_api_gateway_resource.todos,
+      aws_api_gateway_resource.todo,
       aws_api_gateway_method.todos,
-      aws_api_gateway_integration.todos,
       aws_api_gateway_method.todo,
+      aws_api_gateway_integration.todos,
       aws_api_gateway_integration.todo,
       aws_api_gateway_method.cors,
       aws_api_gateway_integration.cors,
@@ -116,8 +117,8 @@ resource "aws_api_gateway_deployment" "this" {
 }
 
 resource "aws_api_gateway_stage" "this" {
-  deployment_id = aws_api_gateway_deployment.this.id
   rest_api_id   = aws_api_gateway_rest_api.this.id
+  deployment_id = aws_api_gateway_deployment.this.id
   stage_name    = var.environment
 
   dynamic "access_log_settings" {
@@ -132,8 +133,8 @@ resource "aws_api_gateway_stage" "this" {
 resource "aws_api_gateway_domain_name" "this" {
   count = local.create_resource_based_on_domain_name
 
-  regional_certificate_arn = aws_acm_certificate_validation.api[0].certificate_arn
   domain_name              = aws_acm_certificate.api[0].domain_name
+  regional_certificate_arn = aws_acm_certificate_validation.api[0].certificate_arn
 
   endpoint_configuration {
     types = ["REGIONAL"]
@@ -276,48 +277,3 @@ resource "aws_api_gateway_integration_response" "cors_todo" {
 
   depends_on = [aws_api_gateway_integration.cors_todo]
 }
-
-# import {
-#   to = aws_cloudwatch_log_group.api_gw_logs
-#   id = "API-Gateway-Execution-Logs_5uahgm4dih/dev"
-# }
-
-# import {
-#   to = aws_api_gateway_stage.this
-#   id = "${aws_api_gateway_rest_api.this.id}/${var.environment}"
-# }
-
-# import {
-#   to = aws_api_gateway_method.cors
-#   id = "bpti902xb9/g5u9cb/OPTIONS"
-# }
-
-# import {
-#   to = aws_api_gateway_integration.cors
-#   id = "bpti902xb9/g5u9cb/OPTIONS"
-# }
-
-# import {
-#   to = aws_api_gateway_method_response.cors
-#   id = "bpti902xb9/g5u9cb/OPTIONS/200"
-# }
-
-# import {
-#   to = aws_api_gateway_integration_response.cors
-#   id = "bpti902xb9/g5u9cb/OPTIONS/200"
-# }
-
-# import {
-#   to = aws_api_gateway_gateway_response.cors_4xx
-#   id = "bpti902xb9/DEFAULT_4XX"
-# }
-
-# import {
-#   to = aws_api_gateway_gateway_response.cors_5xx
-#   id = "bpti902xb9/DEFAULT_5XX"
-# }
-
-# import {
-#   to = aws_iam_role.developer
-#   id = "api-gateway-send-logs-to-cw"
-# }

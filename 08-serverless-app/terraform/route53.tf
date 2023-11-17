@@ -1,3 +1,10 @@
+data "aws_route53_zone" "apex_domain" {
+  count = local.create_resource_based_on_domain_name
+
+  name         = var.domain_name
+  private_zone = false
+}
+
 resource "aws_acm_certificate" "api" {
   count = local.create_resource_based_on_domain_name
 
@@ -5,11 +12,11 @@ resource "aws_acm_certificate" "api" {
   validation_method = "DNS"
 }
 
-data "aws_route53_zone" "apex_domain" {
+resource "aws_acm_certificate_validation" "api" {
   count = local.create_resource_based_on_domain_name
 
-  name         = var.domain_name
-  private_zone = false
+  certificate_arn         = aws_acm_certificate.api[0].arn
+  validation_record_fqdns = [for record in aws_route53_record.api_validation : record.fqdn]
 }
 
 resource "aws_route53_record" "api_validation" {
@@ -27,13 +34,6 @@ resource "aws_route53_record" "api_validation" {
   ttl             = 60
   type            = each.value.type
   zone_id         = data.aws_route53_zone.apex_domain[0].zone_id
-}
-
-resource "aws_acm_certificate_validation" "api" {
-  count = local.create_resource_based_on_domain_name
-
-  certificate_arn         = aws_acm_certificate.api[0].arn
-  validation_record_fqdns = [for record in aws_route53_record.api_validation : record.fqdn]
 }
 
 resource "aws_route53_record" "api" {

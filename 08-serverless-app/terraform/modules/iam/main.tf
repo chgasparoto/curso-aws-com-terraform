@@ -4,11 +4,10 @@ data "aws_iam_policy_document" "this" {
 
     content {
       sid       = statement.value["sid"]
-      effect    = "Allow"
+      effect    = statement.value["effect"]
       resources = statement.value["resources"]
       actions   = statement.value["actions"]
     }
-
   }
 
   dynamic "statement" {
