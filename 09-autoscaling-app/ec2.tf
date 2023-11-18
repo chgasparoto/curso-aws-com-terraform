@@ -1,8 +1,8 @@
 resource "aws_launch_template" "this" {
   name_prefix   = local.namespaced_service_name
-  image_id      = data.aws_ami.ubuntu.id
+  image_id      = data.aws_ami.ubuntu.id # ami
   instance_type = var.instance_type
-  key_name      = var.instance_key_name
+  key_name      = var.instance_keypair_name
   user_data     = filebase64("ec2_setup.sh")
 
   monitoring {
@@ -10,9 +10,8 @@ resource "aws_launch_template" "this" {
   }
 
   network_interfaces {
-    associate_public_ip_address = true
-    delete_on_termination       = true
-    security_groups             = [aws_security_group.autoscaling.id]
+    delete_on_termination = true
+    security_groups       = [aws_security_group.autoscaling_group.id]
   }
 }
 
@@ -21,10 +20,11 @@ resource "aws_autoscaling_group" "this" {
   vpc_zone_identifier       = [aws_subnet.this["pub_a"].id, aws_subnet.this["pub_b"].id]
   max_size                  = 5
   min_size                  = 2
-  health_check_grace_period = 240
+  health_check_grace_period = 240 # 4 minutes
   health_check_type         = "ELB"
   force_delete              = true
-  target_group_arns         = [aws_lb_target_group.this.id]
+
+  target_group_arns = [aws_alb_target_group.this.id]
 
   launch_template {
     id      = aws_launch_template.this.id
@@ -32,33 +32,35 @@ resource "aws_autoscaling_group" "this" {
   }
 }
 
-resource "aws_autoscaling_policy" "scaleup" {
-  name                   = "Scale Up"
+resource "aws_autoscaling_policy" "cpu" {
+  enabled                = true
+  name                   = "Target Tracking Policy - CPU"
+  policy_type            = "TargetTrackingScaling"
   autoscaling_group_name = aws_autoscaling_group.this.name
-  adjustment_type        = "ChangeInCapacity"
-  scaling_adjustment     = "1"
-  cooldown               = "180"
-  policy_type            = "SimpleScaling"
+
+  target_tracking_configuration {
+    disable_scale_in = false
+    target_value     = 50
+
+    predefined_metric_specification {
+      predefined_metric_type = "ASGAverageCPUUtilization"
+    }
+  }
 }
 
-resource "aws_autoscaling_policy" "scaledown" {
-  name                   = "Scale Down"
+resource "aws_autoscaling_policy" "load_balancer" {
+  enabled                = true
+  name                   = "Target Tracking Policy - LB Req Count"
+  policy_type            = "TargetTrackingScaling"
   autoscaling_group_name = aws_autoscaling_group.this.name
-  adjustment_type        = "ChangeInCapacity"
-  scaling_adjustment     = "-1"
-  cooldown               = "180"
-  policy_type            = "SimpleScaling"
-}
 
-resource "aws_instance" "jenkins" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = var.instance_type
+  target_tracking_configuration {
+    disable_scale_in = false
+    target_value     = 10
 
-  vpc_security_group_ids = [aws_security_group.jenkins.id]
-  subnet_id              = aws_subnet.this["pvt_b"].id
-  availability_zone      = "${var.aws_region}b"
-
-  tags = {
-    Name = "Jenkins Machine"
+    predefined_metric_specification {
+      predefined_metric_type = "ALBRequestCountPerTarget"
+      resource_label         = "${aws_alb.this.arn_suffix}/${aws_alb_target_group.this.arn_suffix}"
+    }
   }
 }

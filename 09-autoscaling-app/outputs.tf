@@ -35,5 +35,5 @@ output "sg_alb_id" {
 }
 
 output "alb_id" {
-  value = aws_lb.this.id
+  value = aws_alb.this.id
 }

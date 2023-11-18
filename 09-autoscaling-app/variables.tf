@@ -28,7 +28,7 @@ variable "instance_type" {
   default     = "t3.micro"
 }
 
-variable "instance_key_name" {
+variable "instance_keypair_name" {
   type        = string
   description = "The pem key name to access the instace through the terminal"
   default     = "cleber_kp"
