@@ -60,21 +60,9 @@ variable "cors_allow_methods" {
 }
 
 variable "cors_allow_origins" {
-  description = "List of allowed origins for CORS requests"
-  type        = list(string)
-  default = [
-    "http://localhost:5173",
-    "https://terraformando.net"
-  ]
-}
-
-variable "cors_allow_origins_mapping" {
-  type        = map(string)
-  description = "Mapping for CORs origins in case Credentials header is set since it allow only one origin header"
-  default = {
-    dev  = "http://localhost:5173",
-    prod = "https://terraformando.net"
-  }
+  description = "Allowed origin(s) for CORS requests"
+  type        = string
+  default     = "*"
 }
 
 variable "cors_allow_credentials" {
@@ -84,7 +72,7 @@ variable "cors_allow_credentials" {
 
   validation {
     condition     = contains(["true", "false"], var.cors_allow_credentials)
-    error_message = "CORs allow credentials only accept 'true' or 'false"
+    error_message = "CORs allow credentials only accept 'true' or 'false'"
   }
 }
 

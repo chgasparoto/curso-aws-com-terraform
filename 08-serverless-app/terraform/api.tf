@@ -92,6 +92,7 @@ resource "aws_api_gateway_deployment" "this" {
     #       resources will show a difference after the initial implementation.
     #       It will stabilize to only change when resources change afterwards.
     redeployment = sha1(jsonencode([
+      aws_api_gateway_account.this,
       aws_api_gateway_resource.todos,
       aws_api_gateway_resource.todo,
       aws_api_gateway_method.todos,
@@ -125,7 +126,19 @@ resource "aws_api_gateway_stage" "this" {
     for_each = var.create_logs_for_apigw ? [1] : []
     content {
       destination_arn = aws_cloudwatch_log_group.api_gw_logs[0].arn
-      format          = "JSON"
+      format = jsonencode({
+        "requestId" : "$context.requestId",
+        "extendedRequestId" : "$context.extendedRequestId",
+        "ip" : "$context.identity.sourceIp",
+        "caller" : "$context.identity.caller",
+        "user" : "$context.identity.user",
+        "requestTime" : "$context.requestTime",
+        "httpMethod" : "$context.httpMethod",
+        "resourcePath" : "$context.resourcePath",
+        "status" : "$context.status",
+        "protocol" : "$context.protocol",
+        "responseLength" : "$context.responseLength"
+      })
     }
   }
 }

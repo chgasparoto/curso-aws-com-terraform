@@ -19,7 +19,7 @@ locals {
   formatted_cors = {
     headers     = "'${join(",", var.cors_allow_headers)}'"
     methods     = "'${join(",", var.cors_allow_methods)}'"
-    origins     = var.cors_allow_credentials == "true" ? "'${var.cors_allow_origins_mapping["prod"]}'" : "'${join(",", var.cors_allow_origins)}'"
+    origins     = "'${var.cors_allow_origins}'"
     credentials = "'${var.cors_allow_credentials}'"
   }
 }
