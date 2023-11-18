@@ -22,7 +22,7 @@ resource "aws_cloudfront_distribution" "this" {
 
   default_cache_behavior {
     cache_policy_id            = "658327ea-f89d-4fab-a63d-7e88639e58f6"
-    allowed_methods            = ["GET", "HEAD", "OPTIONS"]
+    allowed_methods            = ["GET", "HEAD", "OPTIONS", "DELETE", "PATCH", "POST", "PUT"]
     cached_methods             = ["GET", "HEAD", "OPTIONS"]
     compress                   = true
     default_ttl                = 0
@@ -55,11 +55,18 @@ resource "aws_cloudfront_distribution" "this" {
     }
   }
 
+  logging_config {
+    include_cookies = true
+    bucket          = module.logs_bucket.domain_name
+    prefix          = "cdn/"
+  }
+
+
   viewer_certificate {
     acm_certificate_arn            = aws_acm_certificate.this[0].arn
     cloudfront_default_certificate = false
     iam_certificate_id             = null
-    minimum_protocol_version       = "TLSv1"
+    minimum_protocol_version       = "TLSv1.2_2021"
     ssl_support_method             = "sni-only"
   }
 }
