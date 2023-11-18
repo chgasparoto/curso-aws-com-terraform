@@ -1,21 +1,5 @@
-data "aws_ami" "ubuntu" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  owners = ["099720109477"] # Canonical
-}
-
 resource "aws_launch_template" "this" {
-  name_prefix   = "terraform-"
+  name_prefix   = local.namespaced_service_name
   image_id      = data.aws_ami.ubuntu.id
   instance_type = var.instance_type
   key_name      = var.instance_key_name
@@ -33,7 +17,7 @@ resource "aws_launch_template" "this" {
 }
 
 resource "aws_autoscaling_group" "this" {
-  name                      = "terraform-autoscaling"
+  name                      = local.namespaced_service_name
   vpc_zone_identifier       = [aws_subnet.this["pub_a"].id, aws_subnet.this["pub_b"].id]
   max_size                  = 5
   min_size                  = 2

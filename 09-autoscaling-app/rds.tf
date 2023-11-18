@@ -1,9 +1,9 @@
 resource "aws_db_subnet_group" "default" {
-  name       = "main"
+  name       = local.namespaced_service_name
   subnet_ids = [aws_subnet.this["pvt_a"].id, aws_subnet.this["pvt_b"].id]
 
   tags = {
-    Name = "DB subnet group"
+    Name = local.namespaced_service_name
   }
 }
 

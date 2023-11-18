@@ -10,6 +10,12 @@ variable "aws_account_id" {
   default     = "871055234888"
 }
 
+variable "environment" {
+  type        = string
+  description = "The environment to deploy to"
+  default     = "dev"
+}
+
 variable "service_name" {
   type        = string
   description = "The service name identifier"
