@@ -22,14 +22,22 @@ variable "service_name" {
   default     = "autoscaling-app"
 }
 
-variable "instance_type" {
-  type        = string
-  description = "Instance computing power"
-  default     = "t3.micro"
+variable "instance_config" {
+  description = "Instance configuration"
+  type = object({
+    ami      = string
+    type     = string
+    key_name = optional(string, null)
+  })
+  default = {
+    ami      = "ami-0479653c00e0a5e59"
+    type     = "t4g.nano"
+    key_name = "cleber_kp"
+  }
 }
 
-variable "instance_keypair_name" {
-  type        = string
-  description = "The pem key name to access the instace through the terminal"
-  default     = "cleber_kp"
-}
+# variable "autoscaling_group_config" {
+#   type = object({
+#     max_size = number
+#   })
+# }

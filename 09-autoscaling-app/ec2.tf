@@ -1,8 +1,8 @@
 resource "aws_launch_template" "this" {
   name_prefix   = local.namespaced_service_name
-  image_id      = data.aws_ami.ubuntu.id # ami
-  instance_type = var.instance_type
-  key_name      = var.instance_keypair_name
+  image_id      = var.instance_config.ami
+  instance_type = var.instance_config.type
+  key_name      = var.instance_config.key_name
   user_data     = filebase64("ec2_setup.sh")
 
   monitoring {
@@ -10,21 +10,24 @@ resource "aws_launch_template" "this" {
   }
 
   network_interfaces {
-    delete_on_termination = true
-    security_groups       = [aws_security_group.autoscaling_group.id]
+    delete_on_termination       = true
+    associate_public_ip_address = true
+    security_groups             = [aws_security_group.autoscaling_group.id]
   }
 }
 
 resource "aws_autoscaling_group" "this" {
-  name                      = local.namespaced_service_name
-  vpc_zone_identifier       = [aws_subnet.this["pub_a"].id, aws_subnet.this["pub_b"].id]
-  max_size                  = 5
-  min_size                  = 2
+  name = local.namespaced_service_name
+
+  desired_capacity          = 1
+  min_size                  = 1
+  max_size                  = 4
   health_check_grace_period = 240 # 4 minutes
   health_check_type         = "ELB"
   force_delete              = true
 
-  target_group_arns = [aws_alb_target_group.this.id]
+  target_group_arns   = [aws_alb_target_group.this.id]
+  vpc_zone_identifier = [aws_subnet.this["pub_a"].id, aws_subnet.this["pub_b"].id]
 
   launch_template {
     id      = aws_launch_template.this.id
@@ -33,7 +36,7 @@ resource "aws_autoscaling_group" "this" {
 }
 
 resource "aws_autoscaling_policy" "cpu" {
-  enabled                = true
+  enabled                = false
   name                   = "Target Tracking Policy - CPU"
   policy_type            = "TargetTrackingScaling"
   autoscaling_group_name = aws_autoscaling_group.this.name
@@ -48,19 +51,19 @@ resource "aws_autoscaling_policy" "cpu" {
   }
 }
 
-resource "aws_autoscaling_policy" "load_balancer" {
-  enabled                = true
-  name                   = "Target Tracking Policy - LB Req Count"
-  policy_type            = "TargetTrackingScaling"
-  autoscaling_group_name = aws_autoscaling_group.this.name
+# resource "aws_autoscaling_policy" "load_balancer" {
+#   enabled                = false
+#   name                   = "Target Tracking Policy - LB Req Count"
+#   policy_type            = "TargetTrackingScaling"
+#   autoscaling_group_name = aws_autoscaling_group.this.name
 
-  target_tracking_configuration {
-    disable_scale_in = false
-    target_value     = 10
+#   target_tracking_configuration {
+#     disable_scale_in = false
+#     target_value     = 10
 
-    predefined_metric_specification {
-      predefined_metric_type = "ALBRequestCountPerTarget"
-      resource_label         = "${aws_alb.this.arn_suffix}/${aws_alb_target_group.this.arn_suffix}"
-    }
-  }
-}
+#     predefined_metric_specification {
+#       predefined_metric_type = "ALBRequestCountPerTarget"
+#       resource_label         = "${aws_alb.this.arn_suffix}/${aws_alb_target_group.this.arn_suffix}"
+#     }
+#   }
+# }

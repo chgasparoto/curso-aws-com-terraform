@@ -51,7 +51,7 @@ resource "aws_route_table" "public" {
   vpc_id = aws_vpc.this.id
 
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block = local.internet_cidr_block
     gateway_id = aws_internet_gateway.this.id
   }
 
