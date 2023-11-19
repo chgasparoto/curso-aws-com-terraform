@@ -10,22 +10,22 @@ resource "aws_alb" "this" {
   }
 }
 
-resource "aws_alb_target_group" "this" {
+resource "aws_alb_target_group" "http" {
   name     = local.namespaced_service_name
   port     = 80
   protocol = "HTTP"
   vpc_id   = aws_vpc.this.id
 
   health_check {
-    enabled             = true
-    healthy_threshold   = 5
-    interval            = 30
-    matcher             = "200"
-    path                = "/"
-    port                = "80"
-    protocol            = "HTTP"
-    timeout             = 5
-    unhealthy_threshold = 5
+    enabled             = var.alb_healthcheck_config.enabled
+    healthy_threshold   = var.alb_healthcheck_config.healthy_threshold
+    interval            = var.alb_healthcheck_config.interval
+    matcher             = var.alb_healthcheck_config.matcher
+    path                = var.alb_healthcheck_config.path
+    port                = var.alb_healthcheck_config.port
+    protocol            = var.alb_healthcheck_config.protocol
+    timeout             = var.alb_healthcheck_config.timeout
+    unhealthy_threshold = var.alb_healthcheck_config.unhealthy_threshold
   }
 }
 
@@ -36,6 +36,6 @@ resource "aws_alb_listener" "this" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_alb_target_group.this.arn
+    target_group_arn = aws_alb_target_group.http.arn
   }
 }
