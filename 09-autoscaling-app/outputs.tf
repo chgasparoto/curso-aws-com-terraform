@@ -10,16 +10,12 @@ output "subnet_ids" {
   value = local.subnet_ids
 }
 
-output "public_route_table_id" {
+output "route_table_public_id" {
   value = aws_route_table.public.id
 }
 
-output "private_route_table_id" {
+output "route_table_private_id" {
   value = aws_route_table.private.id
-}
-
-output "sg_alb_id" {
-  value = aws_security_group.alb.id
 }
 
 output "alb_id" {

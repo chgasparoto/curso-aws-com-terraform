@@ -3,10 +3,10 @@ resource "aws_alb" "this" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb.id]
-  subnets            = [aws_subnet.this["pub_a"].id, aws_subnet.this["pub_b"].id]
+  subnets            = local.public_subnet_ids
 
   tags = {
-    Name = local.namespaced_service_name
+    "Name" = local.namespaced_service_name
   }
 }
 
@@ -29,7 +29,7 @@ resource "aws_alb_target_group" "http" {
   }
 }
 
-resource "aws_alb_listener" "this" {
+resource "aws_alb_listener" "http" {
   load_balancer_arn = aws_alb.this.arn
   port              = 80
   protocol          = "HTTP"
@@ -38,4 +38,5 @@ resource "aws_alb_listener" "this" {
     type             = "forward"
     target_group_arn = aws_alb_target_group.http.arn
   }
+
 }

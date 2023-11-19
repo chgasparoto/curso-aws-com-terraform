@@ -1,11 +1,10 @@
 // Replace with your load balancer's DNS or IP address
 const targetUrl =
-  "http://autoscaling-app-dev-1743440818.eu-central-1.elb.amazonaws.com";
+  "http://autoscaling-app-dev-79566164.eu-central-1.elb.amazonaws.com";
 
 // Number of requests to simulate
-const numberOfRequests = 3;
+const numberOfRequests = 150;
 
-// Function to make HTTP requests
 async function makeRequest(index) {
   try {
     const res = await fetch(targetUrl);
@@ -19,8 +18,6 @@ async function makeRequest(index) {
   }
 }
 
-// Start making requests
-// Function to simulate requests in parallel
 async function makeParallelRequests(numberOfRequests) {
   // Create an array of request promises
   const requestPromises = Array.from({ length: numberOfRequests }, (_, index) =>
@@ -31,5 +28,21 @@ async function makeParallelRequests(numberOfRequests) {
   await Promise.all(requestPromises);
 }
 
-// Start making requests in parallel
-makeParallelRequests(numberOfRequests);
+async function makeSequentialRequests() {
+  for (let i = 0; i < numberOfRequests; i++) {
+    try {
+      const response = await fetch(targetUrl);
+
+      if (response.ok) {
+        console.log(`Request ${i + 1} successful.`);
+      } else {
+        console.error(`Request ${i + 1} failed.`);
+      }
+    } catch (error) {
+      console.error(`Request ${i + 1} failed. Error: ${error.message}`);
+    }
+  }
+}
+
+// makeParallelRequests(numberOfRequests);
+makeSequentialRequests(numberOfRequests);

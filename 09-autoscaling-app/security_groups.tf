@@ -1,6 +1,6 @@
 resource "aws_security_group" "alb" {
-  name        = "${local.namespaced_service_name}-alb"
-  description = "Allows http  and all egress traffic"
+  name        = "${local.namespaced_service_name}-aalb"
+  description = "Allows hhtp and egress traffic"
   vpc_id      = aws_vpc.this.id
 
   ingress {
@@ -24,7 +24,7 @@ resource "aws_security_group" "alb" {
 
 resource "aws_security_group" "autoscaling_group" {
   name        = "${local.namespaced_service_name}-autoscaling-group"
-  description = "Allows ssh/http and all egress traffic"
+  description = "Allows ssh/hhtp and egress traffic"
   vpc_id      = aws_vpc.this.id
 
   ingress {
@@ -59,7 +59,7 @@ resource "aws_security_group" "rds" {
   vpc_id      = aws_vpc.this.id
 
   ingress {
-    from_port       = 3306 # mysql
+    from_port       = 3306
     to_port         = 3306
     protocol        = "tcp"
     security_groups = [aws_security_group.autoscaling_group.id]
@@ -83,6 +83,6 @@ resource "aws_security_group" "jenkins" {
   }
 
   tags = {
-    Name = "${local.namespaced_service_name}-jenkins"
+    "Name" = "${local.namespaced_service_name}-jenkins"
   }
 }

@@ -34,7 +34,7 @@ resource "aws_autoscaling_group" "this" {
   force_delete              = var.autoscaling_group_config.force_delete
 
   target_group_arns   = [aws_alb_target_group.http.id]
-  vpc_zone_identifier = [aws_subnet.this["pub_a"].id, aws_subnet.this["pub_b"].id]
+  vpc_zone_identifier = local.public_subnet_ids
 
   launch_template {
     id      = aws_launch_template.this.id
@@ -80,10 +80,10 @@ resource "aws_instance" "jenkins" {
   instance_type = var.instance_config.type
 
   vpc_security_group_ids = [aws_security_group.jenkins.id]
-  subnet_id              = aws_subnet.this["pvt_b"].id
-  availability_zone      = "${var.aws_region}b"
+  subnet_id              = aws_subnet.this["pvt_a"].id
+  availability_zone      = aws_subnet.this["pvt_a"].availability_zone
 
   tags = {
-    Name = "${local.namespaced_service_name}-jenkins"
+    "Name" = "${local.namespaced_service_name}-jenkins"
   }
 }

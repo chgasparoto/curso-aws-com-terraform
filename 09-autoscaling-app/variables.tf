@@ -56,7 +56,7 @@ variable "autoscaling_group_config" {
   type = object({
     desired_capacity          = optional(number, 1)
     min_size                  = optional(number, 1)
-    max_size                  = optional(number, 4)
+    max_size                  = optional(number, 6)
     health_check_grace_period = optional(number, 300) # 5 minutes
     health_check_type         = optional(string, "ELB")
     force_delete              = optional(bool, true)
