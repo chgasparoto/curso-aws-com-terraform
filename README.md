@@ -1,11 +1,8 @@
 # DevOps: AWS com Terraform Automatizando sua infraestrutura
 
-Arquivos do curso de Terraform publicado na seguintes plataformas:
+Arquivos do curso de Terraform
 
-Curso completo:
-- Gumroad: https://bit.ly/3gvOL0x - Preço cheio. Curso atualizado com novos módulos. Possibilidade de mentoria;
-- Udemy: https://bit.ly/2JuJmJn - Os maiores descontos. Sem atualizações futuras. Sem mentoria;
-- Workover: https://bit.ly/3jPpLDc - Desconto considerável. Possibilidade de mentoria. Sem atualizações futuras.
+Curso completo atualiza com a versão Terraform 1.6: https://bit.ly/47w5o4A
 
 ![Terraform-0-14](https://img.shields.io/badge/terraform-0.14-blueviolet?style=flat-square)
 
