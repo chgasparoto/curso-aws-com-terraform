@@ -2,7 +2,7 @@
 
 Arquivos do curso de Terraform
 
-Curso atualizado com o Terraform 1.6: https://bit.ly/3uODB0y
+Curso atualizado com o Terraform 1.6: https://bit.ly/4bj6aUK
 
 ![Terraform-0-14](https://img.shields.io/badge/terraform-0.14-blueviolet?style=flat-square)
 
